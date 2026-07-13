@@ -64,7 +64,7 @@
     position:sticky; top:0; z-index:40;
     background:rgba(5,6,10,0.82); backdrop-filter:blur(14px);
     border-bottom:1px solid var(--line);
-    padding:14px 16px 10px;
+    padding:calc(env(safe-area-inset-top) + 14px) 16px 10px;
   }
   .brand{display:flex; align-items:center; gap:10px;}
   .brand-mark{
@@ -172,7 +172,7 @@
   .ring-center{
     position:absolute; inset:0; display:flex; flex-direction:column; align-items:center; justify-content:center;
   }
-  .ring-value{font-family:'JetBrains Mono',monospace; font-size:17px; font-weight:700;}
+  .ring-value{font-family:'JetBrains Mono',monospace; font-size:17px; font-weight:700; max-width:120px; overflow:hidden; text-overflow:ellipsis; white-space:nowrap;}
   .ring-sub{font-size:9.5px; color:var(--muted); margin-top:2px; letter-spacing:0.06em;}
   .hero-side{flex:1; min-width:0;}
   .hero-delta{
@@ -239,6 +239,8 @@
   .row-end{text-align:right; flex-shrink:0;}
   .row-value{font-family:'JetBrains Mono',monospace; font-weight:700; font-size:13px;}
   .row-pnl{font-family:'JetBrains Mono',monospace; font-size:11px; margin-top:3px; transition:text-shadow 0.3s ease;}
+  .row-pnl-abs{font-family:'JetBrains Mono',monospace; font-size:9.5px; margin-top:1px; opacity:0.75;}
+  .row-duration{font-size:9.5px; color:var(--muted2); margin-top:2px;}
   .row-actions{display:flex; gap:5px; margin-left:2px;}
   .mini-btn{width:26px;height:26px;border-radius:7px;border:1px solid var(--line); background:transparent; color:var(--muted); display:flex;align-items:center;justify-content:center; flex-shrink:0; transition:color 0.18s ease, border-color 0.18s ease, transform 0.12s ease;}
   .mini-btn:active{color:var(--cyan); border-color:var(--cyan); transform:scale(0.88);}
@@ -473,7 +475,7 @@
         <input id="posAmount" type="number" inputmode="decimal" placeholder="0.00" />
       </div>
       <div class="field">
-        <label>Avg Buy Price ($)</label>
+        <label id="posAvgLabel">Avg Buy Price ($)</label>
         <input id="posAvg" type="number" inputmode="decimal" placeholder="0.00" />
       </div>
     </div>
@@ -485,7 +487,7 @@
       </div>
     </div>
     <div class="field" id="manualPriceField" style="display:none;">
-      <label>Current Price ($)</label>
+      <label id="posManualLabel">Current Price ($)</label>
       <input id="posManualPrice" type="number" inputmode="decimal" placeholder="0.00" />
     </div>
     <div class="hint" id="posHint">Live price updates from CoinGecko when you open the app or tap Refresh. If a coin isn't listed there, switch to Manual.</div>
@@ -510,7 +512,7 @@
       <div class="coin-selected" id="watchCoinSelected" style="display:none;"></div>
     </div>
     <div class="field">
-      <label>Target Buy Price ($) — opsional</label>
+      <label id="watchTargetLabel">Target Buy Price ($) — opsional</label>
       <input id="watchTarget" type="number" inputmode="decimal" placeholder="0.00" />
       <div class="hint">Kalau harga turun sampai ke angka ini, baris koinnya bakal nyala/highlight pas kamu buka app.</div>
     </div>
@@ -631,6 +633,22 @@ const fmt = (nUsd) => {
   }
   return "$" + n.toLocaleString("en-US",{minimumFractionDigits:2,maximumFractionDigits:2});
 };
+const fmtCompact = (nUsd) => {
+  const n = Number(nUsd)||0;
+  if(state.currency === 'IDR'){
+    const idr = n * idrRate;
+    const abs = Math.abs(idr);
+    const sign = idr < 0 ? "-" : "";
+    if(abs >= 1e9) return sign + "Rp" + (abs/1e9).toFixed(2).replace('.',',') + " M";
+    if(abs >= 1e6) return sign + "Rp" + (abs/1e6).toFixed(2).replace('.',',') + " Jt";
+    return sign + "Rp" + Math.round(abs).toLocaleString("id-ID");
+  }
+  const abs = Math.abs(n);
+  const sign = n < 0 ? "-" : "";
+  if(abs >= 1e6) return sign + "$" + (abs/1e6).toFixed(2) + "M";
+  if(abs >= 1e3) return sign + "$" + (abs/1e3).toFixed(1) + "K";
+  return fmt(n);
+};
 const fmtPx = (nUsd) => {
   let n = Number(nUsd)||0;
   if(state.currency === 'IDR'){
@@ -645,6 +663,16 @@ const fmtPx = (nUsd) => {
   if(n < 1) return "$" + n.toFixed(5);
   return "$" + n.toLocaleString("en-US",{minimumFractionDigits:2,maximumFractionDigits:2});
 };
+function formatDuration(dateAdded){
+  if(!dateAdded) return '';
+  const days = Math.floor((Date.now()-dateAdded)/86400000);
+  if(days < 1) return 'Hari ini';
+  if(days < 30) return days + ' hari';
+  if(days < 365) return Math.floor(days/30) + ' bulan';
+  const years = Math.floor(days/365);
+  const remMonths = Math.floor((days%365)/30);
+  return years + ' thn' + (remMonths>0 ? ' '+remMonths+' bln' : '');
+}
 
 /* ---------------- Storage ---------------- */
 const STORAGE_KEY = 'aftershift-portfolio-data';
@@ -899,13 +927,13 @@ function renderSummary(){
   const pnl = totalValue - totalCost;
   const pnlPct = totalCost > 0 ? (pnl/totalCost*100) : 0;
 
-  $('ringValue').textContent = fmt(totalValue);
-  $('statCapital').textContent = fmt(state.capital);
-  $('statCash').textContent = fmt(state.cash);
+  $('ringValue').textContent = fmtCompact(totalValue);
+  $('statCapital').textContent = fmtCompact(state.capital);
+  $('statCash').textContent = fmtCompact(state.cash);
   $('statPositions').textContent = state.holdings.length;
 
   const pnlEl = $('statPnl');
-  pnlEl.textContent = (pnl>=0?"+":"") + fmt(pnl);
+  pnlEl.textContent = (pnl>=0?"+":"") + fmtCompact(pnl);
   pnlEl.className = "stat-value mono " + (pnl>0?"pos":pnl<0?"neg":"");
 
   const delta = $('heroDelta');
@@ -975,6 +1003,7 @@ function renderHoldings(){
 
   items.forEach(h=>{
     const pnlAbs = h._val - h._cost;
+    const durationStr = formatDuration(h.dateAdded);
     const row = document.createElement('div');
     row.className = 'row-card';
     row.innerHTML = `
@@ -985,10 +1014,12 @@ function renderHoldings(){
           <span class="row-tag">${h.mode==='auto'?'LIVE':'MANUAL'}</span>
         </div>
         <div class="row-sub">${h.amount} @ ${fmtPx(h._px)}</div>
+        ${durationStr ? `<div class="row-duration">⏱ ${durationStr}</div>` : ''}
       </div>
       <div class="row-end">
         <div class="row-value">${fmt(h._val)}</div>
         <div class="row-pnl" style="color:${pnlAbs>=0?'var(--pos)':'var(--neg)'}">${pnlAbs>=0?'+':''}${h._pnlPct.toFixed(1)}%</div>
+        <div class="row-pnl-abs" style="color:${pnlAbs>=0?'var(--pos)':'var(--neg)'}">${pnlAbs>=0?'+':''}${fmtCompact(pnlAbs)}</div>
       </div>
       <div class="row-actions">
         <div class="mini-btn" data-edit-hold="${h.idx}">
@@ -1074,11 +1105,14 @@ function populatePresetChips(){ /* presets used only as quick-fill via search pr
 function openPositionModal(idx){
   editingHoldIdx = (idx===undefined) ? null : idx;
   const h = editingHoldIdx!==null ? state.holdings[editingHoldIdx] : null;
+  const isIdr = state.currency === 'IDR';
   $('posSheetTitle').textContent = h ? 'Edit Position' : 'Add Position';
   $('posDelete').style.display = h ? 'block' : 'none';
+  $('posAvgLabel').textContent = 'Avg Buy Price ' + (isIdr ? '(Rp)' : '($)');
+  $('posManualLabel').textContent = 'Current Price ' + (isIdr ? '(Rp)' : '($)');
   $('posAmount').value = h ? h.amount : '';
-  $('posAvg').value = h ? h.avgBuy : '';
-  $('posManualPrice').value = h ? (h.manualPrice||'') : '';
+  $('posAvg').value = h ? (isIdr ? Math.round(h.avgBuy * idrRate) : h.avgBuy) : '';
+  $('posManualPrice').value = h && h.manualPrice ? (isIdr ? Math.round(h.manualPrice * idrRate) : h.manualPrice) : '';
   posSelectedCoin = h ? {id:h.coinId, symbol:h.symbol, name:h.name, image:h.image} : null;
   $('posCoinSearch').value = '';
   $('posCoinResults').style.display='none';
@@ -1106,13 +1140,15 @@ $('posCoinSelected').addEventListener('click', (e)=>{
 function openWatchModal(idx){
   editingWatchIdx = (idx===undefined) ? null : idx;
   const w = editingWatchIdx!==null ? state.watchlist[editingWatchIdx] : null;
+  const isIdr = state.currency === 'IDR';
   $('watchSheetTitle').textContent = w ? 'Edit Watchlist' : 'Add to Watchlist';
   $('watchDelete').style.display = w ? 'block' : 'none';
+  $('watchTargetLabel').textContent = 'Target Buy Price ' + (isIdr ? '(Rp)' : '($)') + ' — opsional';
   watchSelectedCoin = w ? {id:w.coinId, symbol:w.symbol, name:w.name, image:w.image} : null;
   $('watchCoinSearch').value = '';
   $('watchCoinResults').style.display = 'none';
   showSelectedCoin($('watchCoinSelected'), watchSelectedCoin);
-  $('watchTarget').value = w && w.targetPrice ? w.targetPrice : '';
+  $('watchTarget').value = w && w.targetPrice ? (isIdr ? Math.round(w.targetPrice * idrRate) : w.targetPrice) : '';
   $('watchSave').disabled = !watchSelectedCoin;
   $('watchOverlay').classList.add('show');
 }
@@ -1123,18 +1159,25 @@ $('fabAdd').addEventListener('click', ()=>{
 });
 $('posClose').addEventListener('click', ()=> $('posOverlay').classList.remove('show'));
 $('posSave').addEventListener('click', ()=>{
+  const isIdr = state.currency === 'IDR';
   const amount = parseFloat($('posAmount').value)||0;
-  const avgBuy = parseFloat($('posAvg').value)||0;
+  let avgBuy = parseFloat($('posAvg').value)||0;
   const mode = $('posOverlay').dataset.mode || 'auto';
-  const manualPrice = parseFloat($('posManualPrice').value)||0;
+  let manualPrice = parseFloat($('posManualPrice').value)||0;
+  if(isIdr){
+    avgBuy = avgBuy / (idrRate||1);
+    manualPrice = manualPrice / (idrRate||1);
+  }
 
   if(!posSelectedCoin){ showToast("Search and select a coin first"); return; }
   if(amount<=0){ showToast("Amount is required"); return; }
   if(mode==='manual' && manualPrice<=0){ showToast("Enter a manual price"); return; }
 
+  const existing = editingHoldIdx!==null ? state.holdings[editingHoldIdx] : null;
   const obj = {
     coinId: posSelectedCoin.id, symbol: posSelectedCoin.symbol, name: posSelectedCoin.name, image: posSelectedCoin.image,
-    amount, avgBuy, mode, manualPrice
+    amount, avgBuy, mode, manualPrice,
+    dateAdded: existing && existing.dateAdded ? existing.dateAdded : Date.now()
   };
   if(editingHoldIdx!==null) state.holdings[editingHoldIdx] = obj;
   else state.holdings.push(obj);
@@ -1164,7 +1207,8 @@ $('watchCoinSelected').addEventListener('click', (e)=>{
 $('watchClose').addEventListener('click', ()=> $('watchOverlay').classList.remove('show'));
 $('watchSave').addEventListener('click', ()=>{
   if(!watchSelectedCoin){ showToast("Search and select a coin first"); return; }
-  const targetPrice = parseFloat($('watchTarget').value) || 0;
+  let targetPrice = parseFloat($('watchTarget').value) || 0;
+  if(state.currency === 'IDR') targetPrice = targetPrice / (idrRate||1);
   const obj = {coinId:watchSelectedCoin.id, symbol:watchSelectedCoin.symbol, name:watchSelectedCoin.name, image:watchSelectedCoin.image, targetPrice};
   if(editingWatchIdx!==null) state.watchlist[editingWatchIdx] = obj;
   else state.watchlist.push(obj);
