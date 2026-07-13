@@ -7,6 +7,9 @@
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="theme-color" content="#05060a">
+<meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+<meta http-equiv="Pragma" content="no-cache">
+<meta http-equiv="Expires" content="0">
 <title>AFTERSHIFT PORTFOLIO</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
@@ -18,28 +21,43 @@
     --panel2:#10131f;
     --line:rgba(120,170,255,0.14);
     --line-soft:rgba(120,170,255,0.07);
-    --cyan:#3ee8ff;
-    --violet:#a78bfa;
+    --cyan:#4ac8f0;
+    --violet:#9d8cf5;
     --amber:#ffb454;
-    --pos:#3ee8ff;
-    --neg:#ff5d7a;
+    --pos:#3ddc84;
+    --neg:#ff4d6d;
     --text:#e9f1ff;
     --muted:#5f6c8a;
     --muted2:#414d68;
   }
   *{box-sizing:border-box; -webkit-tap-highlight-color:transparent;}
-  html,body{margin:0;padding:0;background:var(--bg);color:var(--text);font-family:'Space Grotesk',sans-serif;overscroll-behavior:none;}
+  html,body{margin:0;padding:0;background:var(--bg);color:var(--text);font-family:'Space Grotesk',sans-serif;overscroll-behavior-y:contain;-webkit-overflow-scrolling:touch;}
   body{
     min-height:100vh;
     background-image:
-      radial-gradient(ellipse 900px 500px at 20% -10%, rgba(62,232,255,0.08), transparent 60%),
-      radial-gradient(ellipse 700px 500px at 100% 0%, rgba(167,139,250,0.07), transparent 60%),
+      radial-gradient(ellipse 900px 500px at 20% -10%, rgba(74,200,240,0.08), transparent 60%),
+      radial-gradient(ellipse 700px 500px at 100% 0%, rgba(157,140,245,0.07), transparent 60%),
       repeating-linear-gradient(0deg, rgba(120,170,255,0.025) 0px, rgba(120,170,255,0.025) 1px, transparent 1px, transparent 32px),
       repeating-linear-gradient(90deg, rgba(120,170,255,0.025) 0px, rgba(120,170,255,0.025) 1px, transparent 1px, transparent 32px);
     padding-bottom:96px;
+    animation:appBoot 0.25s ease;
   }
+  @keyframes appBoot{
+    0%{ opacity:0; }
+    100%{ opacity:1; }
+  }
+  @keyframes flashPos{
+    0%{ opacity:0.35; }
+    100%{ opacity:1; }
+  }
+  @keyframes flashNeg{
+    0%{ opacity:0.35; }
+    100%{ opacity:1; }
+  }
+  .flash-pos{ animation:flashPos 0.4s ease-out; }
+  .flash-neg{ animation:flashNeg 0.4s ease-out; }
   .mono{font-family:'JetBrains Mono',monospace;}
-  ::selection{background:rgba(62,232,255,0.3);}
+  ::selection{background:rgba(74,200,240,0.3);}
 
   /* header */
   .topbar{
@@ -53,7 +71,7 @@
     width:34px;height:34px;border-radius:9px;
     background:linear-gradient(135deg, var(--cyan), var(--violet));
     display:flex;align-items:center;justify-content:center;
-    box-shadow:0 0 18px rgba(62,232,255,0.35);
+    box-shadow:0 0 18px rgba(74,200,240,0.35);
     flex-shrink:0;
   }
   .brand-mark svg{width:18px;height:18px;}
@@ -71,8 +89,9 @@
     width:30px;height:30px;border-radius:8px;border:1px solid var(--line);
     background:var(--panel); display:flex;align-items:center;justify-content:center;
     color:var(--muted); cursor:pointer; flex-shrink:0;
+    transition:background 0.18s ease, color 0.18s ease, transform 0.12s ease, border-color 0.18s ease;
   }
-  .icon-btn:active{background:var(--panel2); color:var(--cyan);}
+  .icon-btn:active{background:var(--panel2); color:var(--cyan); transform:scale(0.92);}
   .icon-btn.spin svg{animation:spin 0.7s linear;}
   @keyframes spin{from{transform:rotate(0)}to{transform:rotate(360deg)}}
 
@@ -80,7 +99,9 @@
     display:flex; align-items:center; gap:5px; cursor:pointer; user-select:none;
     border:1px solid var(--line); border-radius:999px; padding:4px 7px;
     background:var(--panel); flex-shrink:0;
+    transition:transform 0.12s ease;
   }
+  .cur-toggle:active{ transform:scale(0.94); }
   .cur-toggle .cur-label{
     font-family:'JetBrains Mono',monospace; font-size:9px; font-weight:700; letter-spacing:0.03em; color:var(--muted2);
     transition:color 0.2s ease;
@@ -88,38 +109,50 @@
   .cur-toggle .cur-label.on{color:var(--cyan);}
   .cur-switch{
     width:28px; height:15px; border-radius:999px; background:rgba(120,140,180,0.18);
-    border:1px solid var(--line); position:relative; flex-shrink:0; transition:background 0.2s ease, border-color 0.2s ease;
+    border:1px solid var(--line); position:relative; flex-shrink:0; transition:background 0.25s ease, border-color 0.25s ease;
   }
-  .cur-switch.active{background:rgba(62,232,255,0.18); border-color:rgba(62,232,255,0.5);}
+  .cur-switch.active{background:rgba(74,200,240,0.18); border-color:rgba(74,200,240,0.5);}
   .cur-knob{
     position:absolute; top:1px; left:1px; width:11px; height:11px; border-radius:50%;
-    background:var(--muted); transition:transform 0.2s ease, background 0.2s ease, box-shadow 0.2s ease;
+    background:var(--muted); transition:transform 0.28s cubic-bezier(.34,1.56,.64,1), background 0.25s ease, box-shadow 0.25s ease;
   }
   .cur-switch.active .cur-knob{ transform:translateX(13px); background:var(--cyan); box-shadow:0 0 8px var(--cyan); }
 
+  @media (max-width: 380px){
+    .live-pill{ padding:5px 7px; }
+    .brand-sub{ display:none; }
+  }
+
   /* tabs */
-  .tabs{display:flex; gap:6px; margin-top:12px; overflow-x:auto; scrollbar-width:none;}
+  .tabs{display:flex; gap:6px; margin-top:12px; overflow-x:auto; scrollbar-width:none; -webkit-overflow-scrolling:touch;}
   .tabs::-webkit-scrollbar{display:none;}
   .tab{
     flex-shrink:0; font-size:12.5px; font-weight:600; letter-spacing:0.02em;
     padding:8px 14px; border-radius:8px; color:var(--muted); border:1px solid transparent;
     cursor:pointer; white-space:nowrap;
+    transition:color 0.2s ease, background 0.2s ease, border-color 0.2s ease, transform 0.12s ease;
   }
-  .tab.active{color:var(--cyan); background:rgba(62,232,255,0.08); border-color:rgba(62,232,255,0.3);}
+  .tab:active{ transform:scale(0.95); }
+  .tab.active{color:var(--cyan); background:rgba(74,200,240,0.08); border-color:rgba(74,200,240,0.3);}
 
   .wrap{padding:16px; max-width:640px; margin:0 auto;}
   .view{display:none;}
-  .view.active{display:block; animation:fadeIn 0.25s ease;}
+  .view.active{display:block; animation:fadeIn 0.3s cubic-bezier(.22,1,.36,1);}
   @keyframes fadeIn{from{opacity:0; transform:translateY(4px)}to{opacity:1; transform:translateY(0)}}
 
   /* corner-bracket panel = signature element */
   .panel{
     position:relative;
-    background:linear-gradient(180deg, var(--panel), var(--panel2));
+    background:
+      linear-gradient(180deg, rgba(74,200,240,0.06), transparent 45%),
+      linear-gradient(180deg, var(--panel), var(--panel2));
     border:1px solid var(--line);
     border-radius:14px;
     padding:18px;
     margin-bottom:14px;
+    overflow:hidden;
+    -webkit-transform:translateZ(0);
+    transform:translateZ(0);
   }
   .panel::before,.panel::after{
     content:''; position:absolute; width:10px; height:10px;
@@ -146,8 +179,8 @@
     display:inline-flex; align-items:center; gap:5px; font-family:'JetBrains Mono',monospace;
     font-size:12.5px; font-weight:600; padding:4px 9px; border-radius:7px; margin-top:8px;
   }
-  .hero-delta.pos{color:var(--pos); background:rgba(62,232,255,0.1);}
-  .hero-delta.neg{color:var(--neg); background:rgba(255,93,122,0.1);}
+  .hero-delta.pos{color:var(--pos); background:rgba(61,220,132,0.12);}
+  .hero-delta.neg{color:var(--neg); background:rgba(255,77,109,0.12);}
   .hero-delta.flat{color:var(--muted); background:rgba(120,140,180,0.08);}
   .legend{display:flex; flex-direction:column; gap:6px; margin-top:10px;}
   .legend-row{display:flex; align-items:center; gap:7px; font-size:11.5px;}
@@ -186,7 +219,9 @@
   .row-card{
     background:var(--panel); border:1px solid var(--line); border-radius:12px; padding:13px 14px; margin-bottom:9px;
     display:flex; align-items:center; gap:12px;
+    transition:background 0.18s ease, transform 0.12s ease, border-color 0.18s ease;
   }
+  .row-card:active{ background:var(--panel2); transform:scale(0.985); }
   .row-badge{
     width:38px;height:38px;border-radius:10px; flex-shrink:0;
     display:flex;align-items:center;justify-content:center;
@@ -198,13 +233,15 @@
   .row-top{display:flex; align-items:baseline; gap:7px;}
   .row-sym{font-weight:700; font-size:13.5px;}
   .row-tag{font-size:9px; color:var(--muted); border:1px solid var(--line); padding:1px 5px; border-radius:5px; letter-spacing:0.04em;}
+  .row-card.target-hit{ border-color:rgba(61,220,132,0.5); background:rgba(61,220,132,0.06); box-shadow:0 0 0 1px rgba(61,220,132,0.2); }
+  .target-badge{ color:var(--pos); border-color:rgba(61,220,132,0.4); background:rgba(61,220,132,0.12); font-weight:700; }
   .row-sub{font-family:'JetBrains Mono',monospace; font-size:11px; color:var(--muted); margin-top:3px;}
   .row-end{text-align:right; flex-shrink:0;}
   .row-value{font-family:'JetBrains Mono',monospace; font-weight:700; font-size:13px;}
-  .row-pnl{font-family:'JetBrains Mono',monospace; font-size:11px; margin-top:3px;}
+  .row-pnl{font-family:'JetBrains Mono',monospace; font-size:11px; margin-top:3px; transition:text-shadow 0.3s ease;}
   .row-actions{display:flex; gap:5px; margin-left:2px;}
-  .mini-btn{width:26px;height:26px;border-radius:7px;border:1px solid var(--line); background:transparent; color:var(--muted); display:flex;align-items:center;justify-content:center; flex-shrink:0;}
-  .mini-btn:active{color:var(--cyan); border-color:var(--cyan);}
+  .mini-btn{width:26px;height:26px;border-radius:7px;border:1px solid var(--line); background:transparent; color:var(--muted); display:flex;align-items:center;justify-content:center; flex-shrink:0; transition:color 0.18s ease, border-color 0.18s ease, transform 0.12s ease;}
+  .mini-btn:active{color:var(--cyan); border-color:var(--cyan); transform:scale(0.88);}
 
   .empty-panel{
     border:1px dashed var(--line); border-radius:14px; padding:36px 20px; text-align:center; color:var(--muted);
@@ -217,18 +254,25 @@
     background:linear-gradient(135deg, var(--cyan), var(--violet)); color:#05060a;
     border:none; border-radius:13px; padding:14px; font-weight:700; font-size:14px;
     display:flex; align-items:center; justify-content:center; gap:8px;
-    box-shadow:0 8px 30px rgba(62,232,255,0.25);
+    box-shadow:0 8px 30px rgba(74,200,240,0.25);
+    transition:transform 0.15s ease, box-shadow 0.2s ease;
   }
-  .fab:active{transform:scale(0.98);}
+  .fab:active{transform:scale(0.96); box-shadow:0 4px 16px rgba(74,200,240,0.3);}
 
   /* modal */
-  .overlay{position:fixed; inset:0; background:rgba(3,4,8,0.7); backdrop-filter:blur(4px); z-index:60; display:none; align-items:flex-end;}
-  .overlay.show{display:flex;}
+  .overlay{
+    position:fixed; inset:0; background:rgba(3,4,8,0.7); z-index:60;
+    display:none; align-items:flex-end;
+  }
+  .overlay.show{display:flex; backdrop-filter:blur(4px); animation:overlayFade 0.18s ease;}
+  @keyframes overlayFade{ from{background:rgba(3,4,8,0);} to{background:rgba(3,4,8,0.7);} }
   .sheet{
     width:100%; max-width:640px; margin:0 auto; background:var(--bg2); border:1px solid var(--line);
     border-bottom:none; border-radius:18px 18px 0 0; padding:18px 18px calc(env(safe-area-inset-bottom) + 18px);
-    max-height:88vh; overflow-y:auto;
+    max-height:88vh; overflow-y:auto; -webkit-overflow-scrolling:touch;
+    animation:sheetIn 0.22s cubic-bezier(.22,1,.36,1);
   }
+  @keyframes sheetIn{ from{transform:translateY(24px);} to{transform:translateY(0);} }
   .sheet-head{display:flex; align-items:center; margin-bottom:14px;}
   .sheet-title{font-weight:700; font-size:15px; flex:1;}
   .field{margin-bottom:12px;}
@@ -236,40 +280,46 @@
   .field input, .field select{
     width:100%; background:var(--panel); border:1px solid var(--line); border-radius:9px; padding:11px 12px;
     color:var(--text); font-size:13.5px; font-family:'JetBrains Mono',monospace; outline:none;
+    transition:border-color 0.18s ease, box-shadow 0.18s ease;
   }
   .field select{font-family:'Space Grotesk',sans-serif;}
-  .field input:focus, .field select:focus{border-color:var(--cyan);}
+  .field input:focus, .field select:focus{border-color:var(--cyan); box-shadow:0 0 0 3px rgba(74,200,240,0.12);}
   .row2{display:flex; gap:10px;}
   .row2 .field{flex:1;}
   .seg{display:flex; border:1px solid var(--line); border-radius:9px; overflow:hidden;}
-  .seg-opt{flex:1; text-align:center; padding:9px; font-size:12px; font-weight:600; color:var(--muted); cursor:pointer;}
-  .seg-opt.active{background:rgba(62,232,255,0.12); color:var(--cyan);}
+  .seg-opt{flex:1; text-align:center; padding:9px; font-size:12px; font-weight:600; color:var(--muted); cursor:pointer; transition:background 0.2s ease, color 0.2s ease;}
+  .seg-opt.active{background:rgba(74,200,240,0.12); color:var(--cyan);}
   .btn-primary{
     width:100%; background:linear-gradient(135deg, var(--cyan), var(--violet)); color:#05060a; border:none;
     border-radius:10px; padding:13px; font-weight:700; font-size:13.5px; margin-top:6px;
+    transition:transform 0.13s ease, opacity 0.18s ease;
   }
+  .btn-primary:active{ transform:scale(0.98); }
   .btn-primary:disabled{opacity:0.4;}
   .btn-ghost{
     width:100%; background:none; color:var(--neg); border:1px solid rgba(255,93,122,0.3);
     border-radius:10px; padding:11px; font-weight:600; font-size:12.5px; margin-top:8px;
+    transition:transform 0.13s ease, background 0.18s ease;
   }
+  .btn-ghost:active{ transform:scale(0.98); background:rgba(255,77,109,0.08); }
   .hint{font-size:10.5px; color:var(--muted2); margin-top:4px; line-height:1.4;}
-  .close-x{color:var(--muted); cursor:pointer; padding:4px;}
+  .close-x{color:var(--muted); cursor:pointer; padding:4px; transition:color 0.18s ease, transform 0.15s ease;}
+  .close-x:active{ color:var(--text); transform:scale(0.85) rotate(90deg); }
 
   /* coin search results */
   .coin-results{
-    max-height:230px; overflow-y:auto; border:1px solid var(--line); border-radius:10px; margin-top:6px;
+    max-height:230px; overflow-y:auto; -webkit-overflow-scrolling:touch; border:1px solid var(--line); border-radius:10px; margin-top:6px;
     background:var(--panel);
   }
-  .coin-item{display:flex; align-items:center; gap:10px; padding:9px 10px; cursor:pointer; border-bottom:1px solid var(--line-soft);}
+  .coin-item{display:flex; align-items:center; gap:10px; padding:9px 10px; cursor:pointer; border-bottom:1px solid var(--line-soft); transition:background 0.15s ease;}
   .coin-item:last-child{border-bottom:none;}
   .coin-item:active{background:var(--panel2);}
   .coin-item img{width:24px;height:24px;border-radius:50%; flex-shrink:0; background:var(--panel2);}
   .coin-item-name{font-size:12.5px; font-weight:600;}
   .coin-item-sym{font-size:10px; color:var(--muted); font-family:'JetBrains Mono',monospace;}
   .coin-selected{
-    display:flex; align-items:center; gap:10px; padding:10px 12px; background:rgba(62,232,255,0.08);
-    border:1px solid rgba(62,232,255,0.3); border-radius:10px; margin-top:6px; font-size:12.5px;
+    display:flex; align-items:center; gap:10px; padding:10px 12px; background:rgba(74,200,240,0.08);
+    border:1px solid rgba(74,200,240,0.3); border-radius:10px; margin-top:6px; font-size:12.5px;
   }
   .coin-selected img{width:22px;height:22px;border-radius:50%;}
   .coin-clear{margin-left:auto; color:var(--muted); cursor:pointer; font-size:11px;}
@@ -304,6 +354,9 @@
       <div class="icon-btn" id="refreshBtn">
         <svg width="14" height="14" viewBox="0 0 24 24" fill="none"><path d="M21 12a9 9 0 1 1-2.64-6.36" stroke="currentColor" stroke-width="2" stroke-linecap="round"/><path d="M21 3v6h-6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
       </div>
+      <div class="icon-btn" id="menuBtn">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none"><circle cx="5" cy="12" r="1.8" fill="currentColor"/><circle cx="12" cy="12" r="1.8" fill="currentColor"/><circle cx="19" cy="12" r="1.8" fill="currentColor"/></svg>
+      </div>
     </div>
   </div>
   <div class="tabs">
@@ -321,7 +374,7 @@
       <div class="eyebrow"><span>Portfolio Allocation</span><span id="dataSrcTag" style="color:var(--muted2);">via CoinGecko</span></div>
       <div class="hero-grid" style="margin-top:12px;">
         <div class="ring-wrap">
-          <canvas id="ringCanvas" width="296" height="296" style="width:148px;height:148px;"></canvas>
+          <canvas id="ringCanvas" width="296" height="296" style="width:148px;height:148px; transform:translateZ(0);"></canvas>
           <div class="ring-center">
             <div class="ring-value mono" id="ringValue">$0.00</div>
             <div class="ring-sub" id="ringSub">TOTAL VALUE</div>
@@ -339,7 +392,7 @@
         <span class="eyebrow" style="margin:0;">Portfolio Growth</span>
         <span class="growth-range" id="growthRange"></span>
       </div>
-      <canvas id="growthCanvas" width="1160" height="200" style="width:100%; height:100px; display:block;"></canvas>
+      <canvas id="growthCanvas" width="1160" height="200" style="width:100%; height:100px; display:block; transform:translateZ(0);"></canvas>
       <div class="growth-empty" id="growthEmpty" style="display:none;">Belum ada histori — data terkumpul otomatis tiap kamu buka dashboard ini.</div>
     </div>
 
@@ -445,7 +498,7 @@
 <div class="overlay" id="watchOverlay">
   <div class="sheet">
     <div class="sheet-head">
-      <div class="sheet-title">Add to Watchlist</div>
+      <div class="sheet-title" id="watchSheetTitle">Add to Watchlist</div>
       <div class="close-x" id="watchClose">
         <svg width="18" height="18" viewBox="0 0 24 24" fill="none"><path d="M6 6l12 12M18 6L6 18" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
       </div>
@@ -456,7 +509,13 @@
       <div class="coin-results" id="watchCoinResults" style="display:none;"></div>
       <div class="coin-selected" id="watchCoinSelected" style="display:none;"></div>
     </div>
+    <div class="field">
+      <label>Target Buy Price ($) — opsional</label>
+      <input id="watchTarget" type="number" inputmode="decimal" placeholder="0.00" />
+      <div class="hint">Kalau harga turun sampai ke angka ini, baris koinnya bakal nyala/highlight pas kamu buka app.</div>
+    </div>
     <button class="btn-primary" id="watchSave" disabled>Add to Watchlist</button>
+    <button class="btn-ghost" id="watchDelete" style="display:none;">Hapus dari Watchlist</button>
   </div>
 </div>
 
@@ -474,6 +533,23 @@
       <input id="editInput" type="number" inputmode="decimal" placeholder="0.00" />
     </div>
     <button class="btn-primary" id="editSave">Save</button>
+  </div>
+</div>
+
+<!-- Backup & Restore -->
+<div class="overlay" id="menuOverlay">
+  <div class="sheet">
+    <div class="sheet-head">
+      <div class="sheet-title">Backup & Restore</div>
+      <div class="close-x" id="menuClose">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none"><path d="M6 6l12 12M18 6L6 18" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+      </div>
+    </div>
+    <div class="hint" style="margin-bottom:14px;">Data cuma tersimpan di browser ini. Export rutin (misal tiap minggu) supaya nggak hilang kalau HP di-reset atau ganti device.</div>
+    <button class="btn-primary" id="exportBtn">Export Backup (.json)</button>
+    <button class="btn-primary" id="importBtn" style="background:var(--panel); color:var(--text); border:1px solid var(--line);">Import Backup</button>
+    <input type="file" id="importFile" accept="application/json" style="display:none;" />
+    <div class="hint" style="margin-top:10px; color:var(--neg);">⚠ Import akan menimpa semua data yang ada sekarang.</div>
   </div>
 </div>
 
@@ -518,8 +594,10 @@ const PRESETS = [
   {id:"aave", symbol:"AAVE", name:"Aave"},
   {id:"maker", symbol:"MKR", name:"Maker"},
 ];
-const PALETTE = ["#3ee8ff","#a78bfa","#ffb454","#ff5d7a","#4ade80","#60a5fa","#f472b6","#facc15","#34d399","#818cf8"];
+const PALETTE = ["#4ac8f0","#9d8cf5","#9d8cf5","#ff5d7a","#4ade80","#60a5fa","#f472b6","#facc15","#4ac8f0","#818cf8"];
 const CG_BASE = "https://api.coingecko.com/api/v3";
+const COINGECKO_DEMO_KEY = ""; // paste your free CoinGecko Demo API key here once registered
+const COINGECKO_KEY_PARAM = COINGECKO_DEMO_KEY ? `&x_cg_demo_api_key=${COINGECKO_DEMO_KEY}` : "";
 
 let state = { holdings: [], watchlist: [], capital: 0, cash: 0, currency: 'USD', history: [] };
 let priceData = {}; // coinId -> {usd, image}
@@ -528,6 +606,7 @@ let editTarget = null;
 let editingHoldIdx = null;
 let posSelectedCoin = null;
 let watchSelectedCoin = null;
+let editingWatchIdx = null;
 let liveDataEverWorked = false;
 let liveFailNotified = false;
 
@@ -568,50 +647,57 @@ const fmtPx = (nUsd) => {
 };
 
 /* ---------------- Storage ---------------- */
+const STORAGE_KEY = 'aftershift-portfolio-data';
 async function loadData(){
   try{
-    const res = await window.storage.get('portfolio-data', false);
-    if(res && res.value){
-      const parsed = JSON.parse(res.value);
+    const raw = localStorage.getItem(STORAGE_KEY);
+    if(raw){
+      const parsed = JSON.parse(raw);
       state = Object.assign({holdings:[],watchlist:[],capital:0,cash:0,currency:'USD',history:[]}, parsed);
     }
-  }catch(e){ /* no data yet */ }
+  }catch(e){ /* no data yet, or storage unavailable */ }
   updateCurToggleUI();
   renderAll();
 }
-let saveInFlight = false;
-let savePending = false;
 async function saveData(){
-  if(saveInFlight){ savePending = true; return; }
-  saveInFlight = true;
-  await doSaveWithRetry(2);
-  saveInFlight = false;
-  if(savePending){ savePending = false; saveData(); }
-}
-async function doSaveWithRetry(retriesLeft){
   try{
-    const result = await window.storage.set('portfolio-data', JSON.stringify(state), false);
-    if(!result) throw new Error('no result');
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
   }catch(e){
-    if(retriesLeft > 0){
-      await new Promise(r=>setTimeout(r, 400));
-      return doSaveWithRetry(retriesLeft - 1);
-    }
     showToast("Storage error — changes may not persist");
   }
 }
 
 /* ---------------- CoinGecko: prices ---------------- */
+async function fetchWithRetry(url, retries=2, backoffMs=900){
+  for(let attempt=0; attempt<=retries; attempt++){
+    try{
+      const resp = await fetch(url);
+      if(resp.ok) return resp;
+      if(resp.status === 429 && attempt < retries){
+        await new Promise(r=>setTimeout(r, backoffMs * (attempt+1)));
+        continue;
+      }
+      throw new Error('HTTP '+resp.status);
+    }catch(e){
+      if(attempt < retries){
+        await new Promise(r=>setTimeout(r, backoffMs * (attempt+1)));
+        continue;
+      }
+      throw e;
+    }
+  }
+}
+
 async function fetchPrices(){
   const ids = new Set(['tether']); // always include tether to derive USD->IDR rate
   state.holdings.forEach(h => { if(h.mode==='auto' && h.coinId) ids.add(h.coinId); });
   state.watchlist.forEach(w => { if(w.coinId) ids.add(w.coinId); });
+  let fetchSucceeded = false;
 
   $('refreshBtn').classList.add('spin');
   try{
     const idsParam = Array.from(ids).join(',');
-    const resp = await fetch(`${CG_BASE}/simple/price?ids=${idsParam}&vs_currencies=usd,idr&include_24hr_change=true`);
-    if(!resp.ok) throw new Error('HTTP '+resp.status);
+    const resp = await fetchWithRetry(`${CG_BASE}/simple/price?ids=${idsParam}&vs_currencies=usd,idr&include_24hr_change=true${COINGECKO_KEY_PARAM}`);
     const json = await resp.json();
     if(json){
       Object.keys(json).forEach(id=>{
@@ -628,16 +714,29 @@ async function fetchPrices(){
     recordHistorySnapshot();
     liveDataEverWorked = true;
     setDataSrcTag(true);
+    fetchSucceeded = true;
   }catch(e){
     setDataSrcTag(false);
     if(!liveFailNotified){
       liveFailNotified = true;
-      showToast("Live data terblokir di preview ini — pakai Manual price, atau buka file ini di luar Claude");
+      showToast("Gagal ambil harga live — kemungkinan rate-limit CoinGecko. Coba refresh lagi sebentar.");
     }
   }finally{
     $('refreshBtn').classList.remove('spin');
     renderAll();
+    if(fetchSucceeded) flashPnlElements();
   }
+}
+
+function flashPnlElements(){
+  const targets = [$('statPnl'), $('heroDelta'), ...document.querySelectorAll('.row-pnl')];
+  targets.forEach(el=>{
+    if(!el) return;
+    const cls = el.classList.contains('neg') || el.style.color === 'var(--neg)' ? 'flash-neg' : 'flash-pos';
+    el.classList.remove('flash-pos','flash-neg');
+    void el.offsetWidth; // restart animation
+    el.classList.add(cls);
+  });
 }
 
 function currentPrice(item){
@@ -680,8 +779,7 @@ function wireCoinSearch(inputEl, resultsEl, selectedEl, onPick){
 
     searchDebounce = setTimeout(async ()=>{
       try{
-        const resp = await fetch(`${CG_BASE}/search?query=${encodeURIComponent(q)}`);
-        if(!resp.ok){ throw new Error('HTTP '+resp.status); }
+        const resp = await fetchWithRetry(`${CG_BASE}/search?query=${encodeURIComponent(q)}${COINGECKO_KEY_PARAM}`, 1, 700);
         const json = await resp.json();
         const coins = (json.coins||[]).slice(0,8).map(c=>({id:c.id, symbol:c.symbol.toUpperCase(), name:c.name, image:c.thumb, rank:c.market_cap_rank}));
         if(coins.length===0 && local.length===0){
@@ -751,8 +849,8 @@ function drawGrowthChart(){
     if(i===0) ctx.moveTo(x,y); else ctx.lineTo(x,y);
   });
   const grad = ctx.createLinearGradient(0,0,0,h);
-  grad.addColorStop(0,'rgba(62,232,255,0.35)');
-  grad.addColorStop(1,'rgba(62,232,255,0)');
+  grad.addColorStop(0,'rgba(74,200,240,0.35)');
+  grad.addColorStop(1,'rgba(74,200,240,0)');
   ctx.lineTo(pad+(hist.length-1)*stepX, h-pad);
   ctx.lineTo(pad, h-pad);
   ctx.closePath();
@@ -765,7 +863,7 @@ function drawGrowthChart(){
     const y = h - pad - ((p.v-min)/range)*(h-pad*2);
     if(i===0) ctx.moveTo(x,y); else ctx.lineTo(x,y);
   });
-  ctx.strokeStyle = '#3ee8ff';
+  ctx.strokeStyle = '#4ac8f0';
   ctx.lineWidth = 3;
   ctx.lineJoin='round';
   ctx.stroke();
@@ -774,8 +872,8 @@ function drawGrowthChart(){
   const lastY = h - pad - ((vals[vals.length-1]-min)/range)*(h-pad*2);
   ctx.beginPath();
   ctx.arc(lastX,lastY,5,0,Math.PI*2);
-  ctx.fillStyle = '#3ee8ff';
-  ctx.shadowColor = '#3ee8ff'; ctx.shadowBlur = 10;
+  ctx.fillStyle = '#4ac8f0';
+  ctx.shadowColor = '#4ac8f0'; ctx.shadowBlur = 10;
   ctx.fill();
   ctx.shadowBlur = 0;
 }
@@ -915,32 +1013,33 @@ function renderWatchlist(){
     const px = pdata.usd || 0;
     const chg = pdata.change24h;
     const chgStr = (typeof chg === 'number') ? `${chg>=0?'+':''}${chg.toFixed(1)}% 24h` : '';
+    const target = parseFloat(w.targetPrice) || 0;
+    const targetHit = target > 0 && px > 0 && px <= target;
     const row = document.createElement('div');
-    row.className = 'row-card';
+    row.className = 'row-card' + (targetHit ? ' target-hit' : '');
     row.innerHTML = `
       <div class="row-badge">${w.image ? `<img src="${w.image}" onerror="this.parentElement.textContent='${w.symbol.slice(0,3)}'"/>` : w.symbol.slice(0,3).toUpperCase()}</div>
       <div class="row-main">
-        <div class="row-top"><span class="row-sym">${w.symbol}</span></div>
-        <div class="row-sub">${w.name||''}</div>
+        <div class="row-top">
+          <span class="row-sym">${w.symbol}</span>
+          ${targetHit ? '<span class="row-tag target-badge">🎯 TARGET</span>' : ''}
+        </div>
+        <div class="row-sub">${target>0 ? 'Target: '+fmtPx(target) : (w.name||'')}</div>
       </div>
       <div class="row-end">
         <div class="row-value">${px>0?fmtPx(px):'—'}</div>
         <div class="row-pnl" style="color:${(chg||0)>=0?'var(--pos)':'var(--neg)'}">${chgStr}</div>
       </div>
       <div class="row-actions">
-        <div class="mini-btn" data-del-watch="${idx}">
-          <svg width="12" height="12" viewBox="0 0 24 24" fill="none"><path d="M3 6h18M8 6V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2m3 0-1 14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2L4 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        <div class="mini-btn" data-edit-watch="${idx}">
+          <svg width="12" height="12" viewBox="0 0 24 24" fill="none"><path d="M12 20h9" stroke="currentColor" stroke-width="2" stroke-linecap="round"/><path d="M16.5 3.5a2.1 2.1 0 0 1 3 3L7 19l-4 1 1-4Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
         </div>
       </div>
     `;
     list.appendChild(row);
   });
-  list.querySelectorAll('[data-del-watch]').forEach(btn=>{
-    btn.addEventListener('click', ()=>{
-      state.watchlist.splice(parseInt(btn.dataset.delWatch),1);
-      saveData(); renderWatchlist();
-      showToast("Removed from watchlist");
-    });
+  list.querySelectorAll('[data-edit-watch]').forEach(btn=>{
+    btn.addEventListener('click', ()=> openWatchModal(parseInt(btn.dataset.editWatch)));
   });
 }
 
@@ -1004,15 +1103,23 @@ $('posCoinSelected').addEventListener('click', (e)=>{
   if(e.target.id==='clearCoinBtn'){ posSelectedCoin=null; showSelectedCoin($('posCoinSelected'), null); }
 });
 
+function openWatchModal(idx){
+  editingWatchIdx = (idx===undefined) ? null : idx;
+  const w = editingWatchIdx!==null ? state.watchlist[editingWatchIdx] : null;
+  $('watchSheetTitle').textContent = w ? 'Edit Watchlist' : 'Add to Watchlist';
+  $('watchDelete').style.display = w ? 'block' : 'none';
+  watchSelectedCoin = w ? {id:w.coinId, symbol:w.symbol, name:w.name, image:w.image} : null;
+  $('watchCoinSearch').value = '';
+  $('watchCoinResults').style.display = 'none';
+  showSelectedCoin($('watchCoinSelected'), watchSelectedCoin);
+  $('watchTarget').value = w && w.targetPrice ? w.targetPrice : '';
+  $('watchSave').disabled = !watchSelectedCoin;
+  $('watchOverlay').classList.add('show');
+}
+
 $('fabAdd').addEventListener('click', ()=>{
   const activeTab = document.querySelector('.tab.active').dataset.tab;
-  if(activeTab==='watchlist'){
-    watchSelectedCoin = null;
-    $('watchCoinSearch').value=''; $('watchCoinResults').style.display='none';
-    showSelectedCoin($('watchCoinSelected'), null);
-    $('watchSave').disabled = true;
-    $('watchOverlay').classList.add('show');
-  } else{ openPositionModal(); }
+  if(activeTab==='watchlist'){ openWatchModal(); } else{ openPositionModal(); }
 });
 $('posClose').addEventListener('click', ()=> $('posOverlay').classList.remove('show'));
 $('posSave').addEventListener('click', ()=>{
@@ -1057,11 +1164,22 @@ $('watchCoinSelected').addEventListener('click', (e)=>{
 $('watchClose').addEventListener('click', ()=> $('watchOverlay').classList.remove('show'));
 $('watchSave').addEventListener('click', ()=>{
   if(!watchSelectedCoin){ showToast("Search and select a coin first"); return; }
-  state.watchlist.push({coinId:watchSelectedCoin.id, symbol:watchSelectedCoin.symbol, name:watchSelectedCoin.name, image:watchSelectedCoin.image});
+  const targetPrice = parseFloat($('watchTarget').value) || 0;
+  const obj = {coinId:watchSelectedCoin.id, symbol:watchSelectedCoin.symbol, name:watchSelectedCoin.name, image:watchSelectedCoin.image, targetPrice};
+  if(editingWatchIdx!==null) state.watchlist[editingWatchIdx] = obj;
+  else state.watchlist.push(obj);
   saveData();
   $('watchOverlay').classList.remove('show');
-  showToast("Added to watchlist");
+  showToast(editingWatchIdx!==null ? "Watchlist diupdate" : "Added to watchlist");
   fetchPrices();
+});
+$('watchDelete').addEventListener('click', ()=>{
+  if(editingWatchIdx!==null){
+    state.watchlist.splice(editingWatchIdx,1);
+    saveData(); renderAll();
+    showToast("Dihapus dari watchlist");
+  }
+  $('watchOverlay').classList.remove('show');
 });
 
 /* ---------------- Capital / Cash edit ---------------- */
@@ -1095,6 +1213,57 @@ $('holdSearch').addEventListener('input', renderHoldings);
 $('holdSort').addEventListener('change', renderHoldings);
 $('refreshBtn').addEventListener('click', fetchPrices);
 
+/* ---------------- Backup & Restore ---------------- */
+$('menuBtn').addEventListener('click', ()=> $('menuOverlay').classList.add('show'));
+$('menuClose').addEventListener('click', ()=> $('menuOverlay').classList.remove('show'));
+
+$('exportBtn').addEventListener('click', ()=>{
+  try{
+    const json = JSON.stringify(state, null, 2);
+    const blob = new Blob([json], {type:'application/json'});
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    const dateStr = new Date().toISOString().slice(0,10);
+    a.href = url;
+    a.download = `aftershift-backup-${dateStr}.json`;
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    URL.revokeObjectURL(url);
+    localStorage.setItem('aftershift-last-export', Date.now().toString());
+    showToast("Backup di-download");
+  }catch(e){
+    showToast("Export gagal — coba lagi");
+  }
+});
+
+$('importBtn').addEventListener('click', ()=> $('importFile').click());
+$('importFile').addEventListener('change', (e)=>{
+  const file = e.target.files[0];
+  if(!file) return;
+  const reader = new FileReader();
+  reader.onload = (ev)=>{
+    try{
+      const parsed = JSON.parse(ev.target.result);
+      if(!parsed || !Array.isArray(parsed.holdings)){
+        showToast("File tidak valid — bukan file backup AFTERSHIFT");
+        return;
+      }
+      if(!confirm("Import akan menimpa semua data saat ini. Lanjutkan?")) return;
+      state = Object.assign({holdings:[],watchlist:[],capital:0,cash:0,currency:'USD',history:[]}, parsed);
+      saveData();
+      updateCurToggleUI();
+      renderAll();
+      $('menuOverlay').classList.remove('show');
+      showToast("Backup berhasil di-import");
+    }catch(err){
+      showToast("File rusak atau bukan format JSON yang benar");
+    }
+    $('importFile').value = '';
+  };
+  reader.readAsText(file);
+});
+
 let toastTimer;
 function showToast(msg){
   const t = $('toast');
@@ -1106,6 +1275,15 @@ function showToast(msg){
 
 /* ---------------- Init ---------------- */
 loadData().then(fetchPrices);
+setTimeout(()=>{
+  try{
+    const last = localStorage.getItem('aftershift-last-export');
+    const daysSince = last ? (Date.now() - parseInt(last)) / 86400000 : Infinity;
+    if(state.holdings.length > 0 && daysSince > 7){
+      showToast("Sudah lama nggak backup — yuk Export dari menu ⋯");
+    }
+  }catch(e){}
+}, 1500);
 /* Auto-refresh interval removed by request — fetches once on open, then only via manual refresh tap. Saves API calls. */
 </script>
 </body>
