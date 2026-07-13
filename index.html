@@ -1173,6 +1173,16 @@ $('posSave').addEventListener('click', ()=>{
   if(amount<=0){ showToast("Amount is required"); return; }
   if(mode==='manual' && manualPrice<=0){ showToast("Enter a manual price"); return; }
 
+  // Sanity check: catch currency-scale typos (e.g. typing USD price while field expects IDR)
+  const refPrice = priceData[posSelectedCoin.id] ? priceData[posSelectedCoin.id].usd : 0;
+  if(avgBuy > 0 && refPrice > 0){
+    const ratio = refPrice / avgBuy;
+    if(ratio > 50 || ratio < 0.02){
+      const proceed = confirm(`Avg Buy Price kelihatan jauh banget dari harga pasar sekarang (${fmtPx(refPrice)}). Ini beneran harga beli kamu? Kalau salah ketik skala (USD vs IDR), cek lagi sebelum lanjut.`);
+      if(!proceed) return;
+    }
+  }
+
   const existing = editingHoldIdx!==null ? state.holdings[editingHoldIdx] : null;
   const obj = {
     coinId: posSelectedCoin.id, symbol: posSelectedCoin.symbol, name: posSelectedCoin.name, image: posSelectedCoin.image,
