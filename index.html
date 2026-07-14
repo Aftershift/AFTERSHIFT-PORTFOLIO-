@@ -404,7 +404,7 @@
         <div class="stat-value mono" id="statCapital">$0.00</div>
       </div>
       <div class="stat-cell">
-        <div class="stat-label">Available Cash <svg class="edit-pencil" data-edit="cash" width="11" height="11" viewBox="0 0 24 24" fill="none"><path d="M12 20h9" stroke="currentColor" stroke-width="2" stroke-linecap="round"/><path d="M16.5 3.5a2.1 2.1 0 0 1 3 3L7 19l-4 1 1-4Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+        <div class="stat-label" id="cashLabel"><span id="cashLabelText">Available Cash</span> <svg class="edit-pencil" id="cashPencil" data-edit="cash" width="11" height="11" viewBox="0 0 24 24" fill="none"><path d="M12 20h9" stroke="currentColor" stroke-width="2" stroke-linecap="round"/><path d="M16.5 3.5a2.1 2.1 0 0 1 3 3L7 19l-4 1 1-4Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
         <div class="stat-value mono" id="statCash">$0.00</div>
       </div>
       <div class="stat-cell">
@@ -414,6 +414,14 @@
       <div class="stat-cell">
         <div class="stat-label">Active Positions</div>
         <div class="stat-value mono" id="statPositions">0</div>
+      </div>
+    </div>
+
+    <div class="panel" id="realizedPanel" style="display:none;">
+      <div class="eyebrow"><span>Realized PnL (All-time)</span><span class="mono" id="realizedTotal"></span></div>
+      <div style="margin-top:10px; display:flex; justify-content:space-between; align-items:center;">
+        <span style="font-size:11px;color:var(--muted);" id="realizedCount"></span>
+        <span style="font-size:11.5px;color:var(--cyan);cursor:pointer;" id="openArchiveBtn">Lihat Archive →</span>
       </div>
     </div>
   </div>
@@ -538,6 +546,23 @@
   </div>
 </div>
 
+<!-- Realized PnL Archive -->
+<div class="overlay" id="archiveOverlay">
+  <div class="sheet">
+    <div class="sheet-head">
+      <div class="sheet-title">Realized PnL Archive</div>
+      <div class="close-x" id="archiveClose">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none"><path d="M6 6l12 12M18 6L6 18" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+      </div>
+    </div>
+    <div id="archiveList"></div>
+    <div class="empty-panel" id="archiveEmpty" style="display:none;">
+      <div class="empty-title">Belum ada posisi ditutup</div>
+      <div class="empty-sub">Setiap kamu hapus posisi dari Holdings, catatannya bakal muncul di sini.</div>
+    </div>
+  </div>
+</div>
+
 <!-- Backup & Restore -->
 <div class="overlay" id="menuOverlay">
   <div class="sheet">
@@ -601,7 +626,7 @@ const CG_BASE = "https://api.coingecko.com/api/v3";
 const COINGECKO_DEMO_KEY = ""; // paste your free CoinGecko Demo API key here once registered
 const COINGECKO_KEY_PARAM = COINGECKO_DEMO_KEY ? `&x_cg_demo_api_key=${COINGECKO_DEMO_KEY}` : "";
 
-let state = { holdings: [], watchlist: [], capital: 0, cash: 0, currency: 'USD', history: [] };
+let state = { holdings: [], watchlist: [], capital: 0, cash: 0, currency: 'USD', history: [], realized: [] };
 let priceData = {}; // coinId -> {usd, image}
 let idrRate = 16300; // fallback, replaced by live CoinGecko tether/idr rate
 let editTarget = null;
@@ -663,9 +688,10 @@ const fmtPx = (nUsd) => {
   if(n < 1) return "$" + n.toFixed(5);
   return "$" + n.toLocaleString("en-US",{minimumFractionDigits:2,maximumFractionDigits:2});
 };
-function formatDuration(dateAdded){
+function formatDuration(dateAdded, endDate){
   if(!dateAdded) return '';
-  const days = Math.floor((Date.now()-dateAdded)/86400000);
+  const end = endDate || Date.now();
+  const days = Math.floor((end-dateAdded)/86400000);
   if(days < 1) return 'Hari ini';
   if(days < 30) return days + ' hari';
   if(days < 365) return Math.floor(days/30) + ' bulan';
@@ -681,7 +707,7 @@ async function loadData(){
     const raw = localStorage.getItem(STORAGE_KEY);
     if(raw){
       const parsed = JSON.parse(raw);
-      state = Object.assign({holdings:[],watchlist:[],capital:0,cash:0,currency:'USD',history:[]}, parsed);
+      state = Object.assign({holdings:[],watchlist:[],capital:0,cash:0,currency:'USD',history:[],realized:[]}, parsed);
     }
   }catch(e){ /* no data yet, or storage unavailable */ }
   updateCurToggleUI();
@@ -912,6 +938,62 @@ function renderAll(){
   renderHoldings();
   renderWatchlist();
   drawGrowthChart();
+  renderRealized();
+}
+
+function renderRealized(){
+  const panel = $('realizedPanel');
+  if(!state.realized || state.realized.length===0){ panel.style.display='none'; return; }
+  panel.style.display='block';
+  const total = state.realized.reduce((s,r)=>s+r.pnlAbs, 0);
+  const totalEl = $('realizedTotal');
+  totalEl.textContent = (total>=0?'+':'') + fmtCompact(total);
+  totalEl.style.color = total>=0 ? 'var(--pos)' : 'var(--neg)';
+  $('realizedCount').textContent = state.realized.length + ' posisi ditutup';
+}
+
+function renderArchiveList(){
+  const list = $('archiveList');
+  list.innerHTML = '';
+  $('archiveEmpty').style.display = (!state.realized || state.realized.length===0) ? 'block' : 'none';
+  if(!state.realized) return;
+
+  const indexed = state.realized.map((r,i)=>({r,i}));
+  indexed.reverse().forEach(({r,i})=>{
+    const dateStr = new Date(r.dateClosed).toLocaleDateString('id-ID',{day:'2-digit',month:'short',year:'numeric'});
+    const durationStr = r.dateOpened ? formatDuration(r.dateOpened, r.dateClosed) : '—';
+    const row = document.createElement('div');
+    row.className = 'row-card';
+    row.style.marginBottom = '9px';
+    row.innerHTML = `
+      <div class="row-badge">${r.image ? `<img src="${r.image}" onerror="this.parentElement.textContent='${r.symbol.slice(0,3)}'"/>` : r.symbol.slice(0,3).toUpperCase()}</div>
+      <div class="row-main">
+        <div class="row-top"><span class="row-sym">${r.symbol}</span></div>
+        <div class="row-sub">Entry ${fmtPx(r.avgBuy)} → Exit ${fmtPx(r.sellPrice)}</div>
+        <div class="row-duration">⏱ Dipegang ${durationStr} · Ditutup ${dateStr}</div>
+      </div>
+      <div class="row-end">
+        <div class="row-pnl" style="color:${r.pnlAbs>=0?'var(--pos)':'var(--neg)'}">${r.pnlAbs>=0?'+':''}${r.pnlPct.toFixed(1)}%</div>
+        <div class="row-pnl-abs" style="color:${r.pnlAbs>=0?'var(--pos)':'var(--neg)'}">${r.pnlAbs>=0?'+':''}${fmtCompact(r.pnlAbs)}</div>
+      </div>
+      <div class="row-actions">
+        <div class="mini-btn" data-del-realized="${i}">
+          <svg width="12" height="12" viewBox="0 0 24 24" fill="none"><path d="M3 6h18M8 6V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2m3 0-1 14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2L4 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </div>
+      </div>
+    `;
+    list.appendChild(row);
+  });
+  list.querySelectorAll('[data-del-realized]').forEach(btn=>{
+    btn.addEventListener('click', ()=>{
+      if(!confirm("Hapus catatan realized PnL ini? Nggak bisa dibalikin.")) return;
+      state.realized.splice(parseInt(btn.dataset.delRealized), 1);
+      saveData();
+      renderRealized();
+      renderArchiveList();
+      showToast("Catatan dihapus");
+    });
+  });
 }
 
 function renderSummary(){
@@ -929,7 +1011,20 @@ function renderSummary(){
 
   $('ringValue').textContent = fmtCompact(totalValue);
   $('statCapital').textContent = fmtCompact(state.capital);
-  $('statCash').textContent = fmtCompact(state.cash);
+
+  const usdtHolding = state.holdings.find(h => h.coinId === 'tether');
+  const cashLabel = $('cashLabelText');
+  const cashPencil = $('cashPencil');
+  if(usdtHolding){
+    const cashValue = currentPrice(usdtHolding) * (parseFloat(usdtHolding.amount)||0);
+    $('statCash').textContent = fmtCompact(cashValue);
+    if(cashLabel) cashLabel.innerHTML = 'Available Cash <span style="color:var(--cyan);font-size:9px;">🔗 USDT</span>';
+    if(cashPencil) cashPencil.style.display = 'none';
+  }else{
+    $('statCash').textContent = fmtCompact(state.cash);
+    if(cashLabel) cashLabel.textContent = 'Available Cash';
+    if(cashPencil) cashPencil.style.display = 'inline';
+  }
   $('statPositions').textContent = state.holdings.length;
 
   const pnlEl = $('statPnl');
@@ -1198,9 +1293,22 @@ $('posSave').addEventListener('click', ()=>{
 });
 $('posDelete').addEventListener('click', ()=>{
   if(editingHoldIdx!==null){
+    const h = state.holdings[editingHoldIdx];
+    const sellPrice = currentPrice(h);
+    const amount = parseFloat(h.amount)||0;
+    const costBasis = (parseFloat(h.avgBuy)||0) * amount;
+    const proceeds = sellPrice * amount;
+    const pnlAbs = proceeds - costBasis;
+    const pnlPct = costBasis > 0 ? (pnlAbs/costBasis*100) : 0;
+    state.realized.push({
+      symbol: h.symbol, name: h.name, image: h.image, amount,
+      avgBuy: h.avgBuy, sellPrice, pnlAbs, pnlPct,
+      dateOpened: h.dateAdded || null, dateClosed: Date.now()
+    });
+    if(state.realized.length > 200) state.realized.shift();
     state.holdings.splice(editingHoldIdx,1);
     saveData(); renderAll();
-    showToast("Position deleted");
+    showToast("Position ditutup — realized PnL dicatat");
   }
   $('posOverlay').classList.remove('show');
 });
@@ -1271,6 +1379,12 @@ $('refreshBtn').addEventListener('click', fetchPrices);
 $('menuBtn').addEventListener('click', ()=> $('menuOverlay').classList.add('show'));
 $('menuClose').addEventListener('click', ()=> $('menuOverlay').classList.remove('show'));
 
+$('openArchiveBtn').addEventListener('click', ()=>{
+  renderArchiveList();
+  $('archiveOverlay').classList.add('show');
+});
+$('archiveClose').addEventListener('click', ()=> $('archiveOverlay').classList.remove('show'));
+
 $('exportBtn').addEventListener('click', ()=>{
   try{
     const json = JSON.stringify(state, null, 2);
@@ -1304,7 +1418,7 @@ $('importFile').addEventListener('change', (e)=>{
         return;
       }
       if(!confirm("Import akan menimpa semua data saat ini. Lanjutkan?")) return;
-      state = Object.assign({holdings:[],watchlist:[],capital:0,cash:0,currency:'USD',history:[]}, parsed);
+      state = Object.assign({holdings:[],watchlist:[],capital:0,cash:0,currency:'USD',history:[],realized:[]}, parsed);
       saveData();
       updateCurToggleUI();
       renderAll();
