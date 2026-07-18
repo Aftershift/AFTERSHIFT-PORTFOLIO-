@@ -623,7 +623,7 @@ const PRESETS = [
 ];
 const PALETTE = ["#4ac8f0","#9d8cf5","#9d8cf5","#ff5d7a","#4ade80","#60a5fa","#f472b6","#facc15","#4ac8f0","#818cf8"];
 const CG_BASE = "https://api.coingecko.com/api/v3";
-const COINGECKO_DEMO_KEY = ""; // paste your free CoinGecko Demo API key here once registered
+const COINGECKO_DEMO_KEY = "CG-erufvnoBwgSbzSzwXCgs4DR1"; // paste your free CoinGecko Demo API key here once registered
 const COINGECKO_KEY_PARAM = COINGECKO_DEMO_KEY ? `&x_cg_demo_api_key=${COINGECKO_DEMO_KEY}` : "";
 
 let state = { holdings: [], watchlist: [], capital: 0, cash: 0, currency: 'USD', history: [], realized: [] };
@@ -1275,6 +1275,25 @@ $('posSave').addEventListener('click', ()=>{
     if(ratio > 50 || ratio < 0.02){
       const proceed = confirm(`Avg Buy Price kelihatan jauh banget dari harga pasar sekarang (${fmtPx(refPrice)}). Ini beneran harga beli kamu? Kalau salah ketik skala (USD vs IDR), cek lagi sebelum lanjut.`);
       if(!proceed) return;
+    }
+  }
+
+  // Auto-deduct USDT: only for brand-new positions (not edits), and not when the position itself is USDT
+  const isNewPosition = editingHoldIdx===null;
+  const isUsdtItself = posSelectedCoin.id === 'tether';
+  if(isNewPosition && !isUsdtItself){
+    const usdtHolding = state.holdings.find(h => h.coinId === 'tether');
+    if(usdtHolding){
+      const usdtBalance = parseFloat(usdtHolding.amount)||0;
+      const costUsd = amount * avgBuy;
+      if(costUsd > usdtBalance){
+        const shortfall = costUsd - usdtBalance;
+        showToast(`Saldo USDT nggak cukup — kurang ${fmtCompact(shortfall)}. Edit saldo USDT dulu, atau lanjut manual.`);
+        return;
+      }
+      if(costUsd > 0){
+        usdtHolding.amount = usdtBalance - costUsd;
+      }
     }
   }
 
