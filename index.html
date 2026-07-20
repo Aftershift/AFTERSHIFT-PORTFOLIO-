@@ -190,6 +190,13 @@
 
   /* growth chart */
   .growth-head{display:flex; align-items:baseline; justify-content:space-between; margin-bottom:10px;}
+  .range-tabs{display:flex; gap:6px; margin-bottom:10px;}
+  .range-tab{
+    font-size:10.5px; font-weight:600; color:var(--muted); padding:4px 10px; border-radius:7px;
+    border:1px solid var(--line); cursor:pointer; transition:color 0.18s ease, background 0.18s ease, border-color 0.18s ease;
+  }
+  .range-tab:active{ transform:scale(0.94); }
+  .range-tab.active{ color:var(--cyan); background:rgba(74,200,240,0.1); border-color:rgba(74,200,240,0.35); }
   .growth-range{font-family:'JetBrains Mono',monospace; font-size:10px; color:var(--muted);}
   .growth-empty{font-size:11.5px; color:var(--muted); text-align:center; padding:20px 0;}
 
@@ -393,6 +400,11 @@
       <div class="growth-head">
         <span class="eyebrow" style="margin:0;">Portfolio Growth</span>
         <span class="growth-range" id="growthRange"></span>
+      </div>
+      <div class="range-tabs" id="rangeTabs">
+        <span class="range-tab" data-range="7">7D</span>
+        <span class="range-tab" data-range="30">30D</span>
+        <span class="range-tab active" data-range="all">All</span>
       </div>
       <canvas id="growthCanvas" width="1160" height="200" style="width:100%; height:100px; display:block; transform:translateZ(0);"></canvas>
       <div class="growth-empty" id="growthEmpty" style="display:none;">Belum ada histori — data terkumpul otomatis tiap kamu buka dashboard ini.</div>
@@ -879,11 +891,17 @@ function recordHistorySnapshot(){
   }
   saveData();
 }
+let selectedRange = 'all';
 function drawGrowthChart(){
   const c = $('growthCanvas'); const ctx = c.getContext('2d');
   const w=c.width, h=c.height;
   ctx.clearRect(0,0,w,h);
-  const hist = state.history;
+  let hist = state.history;
+  if(selectedRange !== 'all'){
+    const days = parseInt(selectedRange);
+    const cutoff = Date.now() - days*86400000;
+    hist = hist.filter(p => new Date(p.d).getTime() >= cutoff);
+  }
   $('growthEmpty').style.display = hist.length < 2 ? 'block' : 'none';
   $('growthCanvas').style.display = hist.length < 2 ? 'none' : 'block';
   if(hist.length < 2){ $('growthRange').textContent=''; return; }
@@ -1392,6 +1410,14 @@ document.querySelectorAll('.overlay').forEach(ov=>{
 });
 $('holdSearch').addEventListener('input', renderHoldings);
 $('holdSort').addEventListener('change', renderHoldings);
+document.querySelectorAll('.range-tab').forEach(tab=>{
+  tab.addEventListener('click', ()=>{
+    document.querySelectorAll('.range-tab').forEach(t=>t.classList.remove('active'));
+    tab.classList.add('active');
+    selectedRange = tab.dataset.range;
+    drawGrowthChart();
+  });
+});
 $('refreshBtn').addEventListener('click', fetchPrices);
 
 /* ---------------- Backup & Restore ---------------- */
