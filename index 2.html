@@ -1,0 +1,1503 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover, maximum-scale=1">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="theme-color" content="#05060a">
+<meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+<meta http-equiv="Pragma" content="no-cache">
+<meta http-equiv="Expires" content="0">
+<title>AFTERSHIFT PORTFOLIO</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:#05060a;
+    --bg2:#090b12;
+    --panel:#0c0f1a;
+    --panel2:#10131f;
+    --line:rgba(120,170,255,0.14);
+    --line-soft:rgba(120,170,255,0.07);
+    --cyan:#4ac8f0;
+    --violet:#9d8cf5;
+    --amber:#ffb454;
+    --pos:#3ddc84;
+    --neg:#ff4d6d;
+    --text:#e9f1ff;
+    --muted:#5f6c8a;
+    --muted2:#414d68;
+  }
+  *{box-sizing:border-box; -webkit-tap-highlight-color:transparent;}
+  html,body{margin:0;padding:0;background:var(--bg);color:var(--text);font-family:'Space Grotesk',sans-serif;overscroll-behavior-y:contain;-webkit-overflow-scrolling:touch;}
+  body{
+    min-height:100vh;
+    background-image:
+      radial-gradient(ellipse 900px 500px at 20% -10%, rgba(74,200,240,0.08), transparent 60%),
+      radial-gradient(ellipse 700px 500px at 100% 0%, rgba(157,140,245,0.07), transparent 60%),
+      repeating-linear-gradient(0deg, rgba(120,170,255,0.025) 0px, rgba(120,170,255,0.025) 1px, transparent 1px, transparent 32px),
+      repeating-linear-gradient(90deg, rgba(120,170,255,0.025) 0px, rgba(120,170,255,0.025) 1px, transparent 1px, transparent 32px);
+    padding-bottom:96px;
+    animation:appBoot 0.25s ease;
+  }
+  @keyframes appBoot{
+    0%{ opacity:0; }
+    100%{ opacity:1; }
+  }
+  @keyframes flashPos{
+    0%{ opacity:0.35; }
+    100%{ opacity:1; }
+  }
+  @keyframes flashNeg{
+    0%{ opacity:0.35; }
+    100%{ opacity:1; }
+  }
+  .flash-pos{ animation:flashPos 0.4s ease-out; }
+  .flash-neg{ animation:flashNeg 0.4s ease-out; }
+  .mono{font-family:'JetBrains Mono',monospace;}
+  ::selection{background:rgba(74,200,240,0.3);}
+
+  /* header */
+  .topbar{
+    position:sticky; top:0; z-index:40;
+    background:rgba(5,6,10,0.82); backdrop-filter:blur(14px);
+    border-bottom:1px solid var(--line);
+    padding:calc(env(safe-area-inset-top) + 14px) 16px 10px;
+  }
+  .brand{display:flex; align-items:center; gap:10px;}
+  .brand-mark{
+    width:34px;height:34px;border-radius:9px;
+    background:linear-gradient(135deg, var(--cyan), var(--violet));
+    display:flex;align-items:center;justify-content:center;
+    box-shadow:0 0 18px rgba(74,200,240,0.35);
+    flex-shrink:0;
+  }
+  .brand-mark svg{width:18px;height:18px;}
+  .brand-name{font-weight:700; font-size:16px; letter-spacing:0.04em;}
+  .brand-sub{font-size:10px; color:var(--muted); letter-spacing:0.14em; text-transform:uppercase; margin-top:1px;}
+  .brand-right{margin-left:auto; display:flex; align-items:center; gap:6px;}
+  .live-pill{
+    display:flex; align-items:center; gap:5px;
+    font-family:'JetBrains Mono',monospace; font-size:9.5px; color:var(--muted);
+    border:1px solid var(--line); border-radius:999px; padding:5px 7px;
+  }
+  .live-dot{width:6px;height:6px;border-radius:50%;background:var(--cyan); box-shadow:0 0 8px var(--cyan); animation:pulse 1.8s infinite;}
+  @keyframes pulse{0%,100%{opacity:1} 50%{opacity:0.35}}
+  .icon-btn{
+    width:30px;height:30px;border-radius:8px;border:1px solid var(--line);
+    background:var(--panel); display:flex;align-items:center;justify-content:center;
+    color:var(--muted); cursor:pointer; flex-shrink:0;
+    transition:background 0.18s ease, color 0.18s ease, transform 0.12s ease, border-color 0.18s ease;
+  }
+  .icon-btn:active{background:var(--panel2); color:var(--cyan); transform:scale(0.92);}
+  .icon-btn.spin svg{animation:spin 0.7s linear;}
+  @keyframes spin{from{transform:rotate(0)}to{transform:rotate(360deg)}}
+
+  .cur-toggle{
+    display:flex; align-items:center; gap:5px; cursor:pointer; user-select:none;
+    border:1px solid var(--line); border-radius:999px; padding:4px 7px;
+    background:var(--panel); flex-shrink:0;
+    transition:transform 0.12s ease;
+  }
+  .cur-toggle:active{ transform:scale(0.94); }
+  .cur-toggle .cur-label{
+    font-family:'JetBrains Mono',monospace; font-size:9px; font-weight:700; letter-spacing:0.03em; color:var(--muted2);
+    transition:color 0.2s ease;
+  }
+  .cur-toggle .cur-label.on{color:var(--cyan);}
+  .cur-switch{
+    width:28px; height:15px; border-radius:999px; background:rgba(120,140,180,0.18);
+    border:1px solid var(--line); position:relative; flex-shrink:0; transition:background 0.25s ease, border-color 0.25s ease;
+  }
+  .cur-switch.active{background:rgba(74,200,240,0.18); border-color:rgba(74,200,240,0.5);}
+  .cur-knob{
+    position:absolute; top:1px; left:1px; width:11px; height:11px; border-radius:50%;
+    background:var(--muted); transition:transform 0.28s cubic-bezier(.34,1.56,.64,1), background 0.25s ease, box-shadow 0.25s ease;
+  }
+  .cur-switch.active .cur-knob{ transform:translateX(13px); background:var(--cyan); box-shadow:0 0 8px var(--cyan); }
+
+  @media (max-width: 380px){
+    .live-pill{ padding:5px 7px; }
+    .brand-sub{ display:none; }
+  }
+
+  /* tabs */
+  .tabs{display:flex; gap:6px; margin-top:12px; overflow-x:auto; scrollbar-width:none; -webkit-overflow-scrolling:touch;}
+  .tabs::-webkit-scrollbar{display:none;}
+  .tab{
+    flex-shrink:0; font-size:12.5px; font-weight:600; letter-spacing:0.02em;
+    padding:8px 14px; border-radius:8px; color:var(--muted); border:1px solid transparent;
+    cursor:pointer; white-space:nowrap;
+    transition:color 0.2s ease, background 0.2s ease, border-color 0.2s ease, transform 0.12s ease;
+  }
+  .tab:active{ transform:scale(0.95); }
+  .tab.active{color:var(--cyan); background:rgba(74,200,240,0.08); border-color:rgba(74,200,240,0.3);}
+
+  .wrap{padding:16px; max-width:640px; margin:0 auto;}
+  .view{display:none;}
+  .view.active{display:block; animation:fadeIn 0.3s cubic-bezier(.22,1,.36,1);}
+  @keyframes fadeIn{from{opacity:0; transform:translateY(4px)}to{opacity:1; transform:translateY(0)}}
+
+  /* corner-bracket panel = signature element */
+  .panel{
+    position:relative;
+    background:
+      linear-gradient(180deg, rgba(74,200,240,0.06), transparent 45%),
+      linear-gradient(180deg, var(--panel), var(--panel2));
+    border:1px solid var(--line);
+    border-radius:14px;
+    padding:18px;
+    margin-bottom:14px;
+    overflow:hidden;
+    -webkit-transform:translateZ(0);
+    transform:translateZ(0);
+  }
+  .panel::before,.panel::after{
+    content:''; position:absolute; width:10px; height:10px;
+    border-top:1.5px solid var(--cyan); border-left:1.5px solid var(--cyan);
+    top:-1px; left:-1px; opacity:0.7;
+  }
+  .panel::after{
+    left:auto; right:-1px; top:auto; bottom:-1px;
+    border-top:none; border-left:none;
+    border-bottom:1.5px solid var(--violet); border-right:1.5px solid var(--violet);
+  }
+  .eyebrow{font-size:10px; letter-spacing:0.16em; color:var(--muted); text-transform:uppercase; font-weight:600; display:flex; align-items:center; justify-content:space-between;}
+
+  /* hero */
+  .hero-grid{display:flex; gap:20px; align-items:center;}
+  .ring-wrap{position:relative; flex-shrink:0; width:148px; height:148px;}
+  .ring-center{
+    position:absolute; inset:0; display:flex; flex-direction:column; align-items:center; justify-content:center;
+  }
+  .ring-value{font-family:'JetBrains Mono',monospace; font-size:17px; font-weight:700; max-width:120px; overflow:hidden; text-overflow:ellipsis; white-space:nowrap;}
+  .ring-sub{font-size:9.5px; color:var(--muted); margin-top:2px; letter-spacing:0.06em;}
+  .hero-side{flex:1; min-width:0;}
+  .hero-delta{
+    display:inline-flex; align-items:center; gap:5px; font-family:'JetBrains Mono',monospace;
+    font-size:12.5px; font-weight:600; padding:4px 9px; border-radius:7px; margin-top:8px;
+  }
+  .hero-delta.pos{color:var(--pos); background:rgba(61,220,132,0.12);}
+  .hero-delta.neg{color:var(--neg); background:rgba(255,77,109,0.12);}
+  .hero-delta.flat{color:var(--muted); background:rgba(120,140,180,0.08);}
+  .legend{display:flex; flex-direction:column; gap:6px; margin-top:10px;}
+  .legend-row{display:flex; align-items:center; gap:7px; font-size:11.5px;}
+  .legend-dot{width:7px;height:7px;border-radius:2px; flex-shrink:0;}
+  .legend-sym{font-weight:600; color:var(--text);}
+  .legend-pct{margin-left:auto; font-family:'JetBrains Mono',monospace; color:var(--muted); font-size:11px;}
+
+  /* growth chart */
+  .growth-head{display:flex; align-items:baseline; justify-content:space-between; margin-bottom:10px;}
+  .range-tabs{display:flex; gap:6px; margin-bottom:10px;}
+  .range-tab{
+    font-size:10.5px; font-weight:600; color:var(--muted); padding:4px 10px; border-radius:7px;
+    border:1px solid var(--line); cursor:pointer; transition:color 0.18s ease, background 0.18s ease, border-color 0.18s ease;
+  }
+  .range-tab:active{ transform:scale(0.94); }
+  .range-tab.active{ color:var(--cyan); background:rgba(74,200,240,0.1); border-color:rgba(74,200,240,0.35); }
+  .growth-range{font-family:'JetBrains Mono',monospace; font-size:10px; color:var(--muted);}
+  .growth-empty{font-size:11.5px; color:var(--muted); text-align:center; padding:20px 0;}
+
+  /* stat grid */
+  .stat-grid{display:grid; grid-template-columns:1fr 1fr; gap:1px; background:var(--line); border:1px solid var(--line); border-radius:14px; overflow:hidden; margin-bottom:14px;}
+  .stat-cell{background:var(--panel); padding:14px 16px;}
+  .stat-label{display:flex; align-items:center; gap:6px; font-size:10px; letter-spacing:0.1em; color:var(--muted); text-transform:uppercase; font-weight:600;}
+  .stat-value{font-family:'JetBrains Mono',monospace; font-size:17px; font-weight:700; margin-top:6px;}
+  .stat-value.pos{color:var(--pos);}
+  .stat-value.neg{color:var(--neg);}
+  .edit-pencil{color:var(--muted2); cursor:pointer;}
+  .edit-pencil:active{color:var(--cyan);}
+
+  .toolbar{display:flex; gap:8px; margin-bottom:12px;}
+  .search{
+    flex:1; display:flex; align-items:center; gap:8px; background:var(--panel); border:1px solid var(--line);
+    border-radius:10px; padding:9px 12px;
+  }
+  .search input{background:none; border:none; outline:none; color:var(--text); font-size:13px; width:100%; font-family:'Space Grotesk',sans-serif;}
+  .search input::placeholder{color:var(--muted2);}
+  select.sortsel{
+    background:var(--panel); border:1px solid var(--line); color:var(--text); border-radius:10px;
+    padding:0 10px; font-size:12.5px; font-family:'Space Grotesk',sans-serif;
+  }
+
+  /* holding row */
+  .row-card{
+    background:var(--panel); border:1px solid var(--line); border-radius:12px; padding:13px 14px; margin-bottom:9px;
+    display:flex; align-items:center; gap:12px;
+    transition:background 0.18s ease, transform 0.12s ease, border-color 0.18s ease;
+  }
+  .row-card:active{ background:var(--panel2); transform:scale(0.985); }
+  .row-badge{
+    width:38px;height:38px;border-radius:10px; flex-shrink:0;
+    display:flex;align-items:center;justify-content:center;
+    font-family:'JetBrains Mono',monospace; font-weight:700; font-size:11px;
+    background:rgba(120,140,180,0.08); border:1px solid var(--line); overflow:hidden;
+  }
+  .row-badge img{width:100%;height:100%;object-fit:cover;}
+  .row-main{flex:1; min-width:0;}
+  .row-top{display:flex; align-items:baseline; gap:7px;}
+  .row-sym{font-weight:700; font-size:13.5px;}
+  .row-tag{font-size:9px; color:var(--muted); border:1px solid var(--line); padding:1px 5px; border-radius:5px; letter-spacing:0.04em;}
+  .row-card.target-hit{ border-color:rgba(61,220,132,0.5); background:rgba(61,220,132,0.06); box-shadow:0 0 0 1px rgba(61,220,132,0.2); }
+  .target-badge{ color:var(--pos); border-color:rgba(61,220,132,0.4); background:rgba(61,220,132,0.12); font-weight:700; }
+  .row-sub{font-family:'JetBrains Mono',monospace; font-size:11px; color:var(--muted); margin-top:3px;}
+  .row-end{text-align:right; flex-shrink:0;}
+  .row-value{font-family:'JetBrains Mono',monospace; font-weight:700; font-size:13px;}
+  .row-pnl{font-family:'JetBrains Mono',monospace; font-size:11px; margin-top:3px; transition:text-shadow 0.3s ease;}
+  .row-pnl-abs{font-family:'JetBrains Mono',monospace; font-size:9.5px; margin-top:1px; opacity:0.75;}
+  .row-duration{font-size:9.5px; color:var(--muted2); margin-top:2px;}
+  .row-actions{display:flex; gap:5px; margin-left:2px;}
+  .mini-btn{width:26px;height:26px;border-radius:7px;border:1px solid var(--line); background:transparent; color:var(--muted); display:flex;align-items:center;justify-content:center; flex-shrink:0; transition:color 0.18s ease, border-color 0.18s ease, transform 0.12s ease;}
+  .mini-btn:active{color:var(--cyan); border-color:var(--cyan); transform:scale(0.88);}
+
+  .empty-panel{
+    border:1px dashed var(--line); border-radius:14px; padding:36px 20px; text-align:center; color:var(--muted);
+  }
+  .empty-title{font-weight:700; color:var(--text); font-size:14px; margin-bottom:6px;}
+  .empty-sub{font-size:12px; line-height:1.5; max-width:280px; margin:0 auto;}
+
+  .fab{
+    position:fixed; left:16px; right:16px; bottom:16px; max-width:608px; margin:0 auto; z-index:30;
+    background:linear-gradient(135deg, var(--cyan), var(--violet)); color:#05060a;
+    border:none; border-radius:13px; padding:14px; font-weight:700; font-size:14px;
+    display:flex; align-items:center; justify-content:center; gap:8px;
+    box-shadow:0 8px 30px rgba(74,200,240,0.25);
+    transition:transform 0.15s ease, box-shadow 0.2s ease;
+  }
+  .fab:active{transform:scale(0.96); box-shadow:0 4px 16px rgba(74,200,240,0.3);}
+
+  /* modal */
+  .overlay{
+    position:fixed; inset:0; background:rgba(3,4,8,0.7); z-index:60;
+    display:none; align-items:flex-end;
+  }
+  .overlay.show{display:flex; backdrop-filter:blur(4px); animation:overlayFade 0.18s ease;}
+  @keyframes overlayFade{ from{background:rgba(3,4,8,0);} to{background:rgba(3,4,8,0.7);} }
+  .sheet{
+    width:100%; max-width:640px; margin:0 auto; background:var(--bg2); border:1px solid var(--line);
+    border-bottom:none; border-radius:18px 18px 0 0; padding:18px 18px calc(env(safe-area-inset-bottom) + 18px);
+    max-height:88vh; overflow-y:auto; -webkit-overflow-scrolling:touch;
+    animation:sheetIn 0.22s cubic-bezier(.22,1,.36,1);
+  }
+  @keyframes sheetIn{ from{transform:translateY(24px);} to{transform:translateY(0);} }
+  .sheet-head{display:flex; align-items:center; margin-bottom:14px;}
+  .sheet-title{font-weight:700; font-size:15px; flex:1;}
+  .field{margin-bottom:12px;}
+  .field label{font-size:10.5px; color:var(--muted); text-transform:uppercase; letter-spacing:0.08em; font-weight:600; display:block; margin-bottom:6px;}
+  .field input, .field select{
+    width:100%; background:var(--panel); border:1px solid var(--line); border-radius:9px; padding:11px 12px;
+    color:var(--text); font-size:13.5px; font-family:'JetBrains Mono',monospace; outline:none;
+    transition:border-color 0.18s ease, box-shadow 0.18s ease;
+  }
+  .field select{font-family:'Space Grotesk',sans-serif;}
+  .field input:focus, .field select:focus{border-color:var(--cyan); box-shadow:0 0 0 3px rgba(74,200,240,0.12);}
+  .row2{display:flex; gap:10px;}
+  .row2 .field{flex:1;}
+  .seg{display:flex; border:1px solid var(--line); border-radius:9px; overflow:hidden;}
+  .seg-opt{flex:1; text-align:center; padding:9px; font-size:12px; font-weight:600; color:var(--muted); cursor:pointer; transition:background 0.2s ease, color 0.2s ease;}
+  .seg-opt.active{background:rgba(74,200,240,0.12); color:var(--cyan);}
+  .btn-primary{
+    width:100%; background:linear-gradient(135deg, var(--cyan), var(--violet)); color:#05060a; border:none;
+    border-radius:10px; padding:13px; font-weight:700; font-size:13.5px; margin-top:6px;
+    transition:transform 0.13s ease, opacity 0.18s ease;
+  }
+  .btn-primary:active{ transform:scale(0.98); }
+  .btn-primary:disabled{opacity:0.4;}
+  .btn-ghost{
+    width:100%; background:none; color:var(--neg); border:1px solid rgba(255,93,122,0.3);
+    border-radius:10px; padding:11px; font-weight:600; font-size:12.5px; margin-top:8px;
+    transition:transform 0.13s ease, background 0.18s ease;
+  }
+  .btn-ghost:active{ transform:scale(0.98); background:rgba(255,77,109,0.08); }
+  .hint{font-size:10.5px; color:var(--muted2); margin-top:4px; line-height:1.4;}
+  .close-x{color:var(--muted); cursor:pointer; padding:4px; transition:color 0.18s ease, transform 0.15s ease;}
+  .close-x:active{ color:var(--text); transform:scale(0.85) rotate(90deg); }
+
+  /* coin search results */
+  .coin-results{
+    max-height:230px; overflow-y:auto; -webkit-overflow-scrolling:touch; border:1px solid var(--line); border-radius:10px; margin-top:6px;
+    background:var(--panel);
+  }
+  .coin-item{display:flex; align-items:center; gap:10px; padding:9px 10px; cursor:pointer; border-bottom:1px solid var(--line-soft); transition:background 0.15s ease;}
+  .coin-item:last-child{border-bottom:none;}
+  .coin-item:active{background:var(--panel2);}
+  .coin-item img{width:24px;height:24px;border-radius:50%; flex-shrink:0; background:var(--panel2);}
+  .coin-item-name{font-size:12.5px; font-weight:600;}
+  .coin-item-sym{font-size:10px; color:var(--muted); font-family:'JetBrains Mono',monospace;}
+  .coin-selected{
+    display:flex; align-items:center; gap:10px; padding:10px 12px; background:rgba(74,200,240,0.08);
+    border:1px solid rgba(74,200,240,0.3); border-radius:10px; margin-top:6px; font-size:12.5px;
+  }
+  .coin-selected img{width:22px;height:22px;border-radius:50%;}
+  .coin-clear{margin-left:auto; color:var(--muted); cursor:pointer; font-size:11px;}
+
+  .toast{
+    position:fixed; top:14px; left:50%; transform:translateX(-50%) translateY(-60px); z-index:80;
+    background:var(--panel2); border:1px solid var(--line); color:var(--text); font-size:12.5px;
+    padding:10px 16px; border-radius:10px; transition:transform 0.3s ease; box-shadow:0 8px 24px rgba(0,0,0,0.4);
+    max-width:88vw; text-align:center;
+  }
+  .toast.show{transform:translateX(-50%) translateY(0);}
+</style>
+</head>
+<body>
+
+<div class="topbar">
+  <div class="brand">
+    <div class="brand-mark">
+      <svg viewBox="0 0 24 24" fill="none"><path d="M3 17L9 11L13 15L21 6" stroke="#05060a" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/><path d="M15 6H21V12" stroke="#05060a" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg>
+    </div>
+    <div>
+      <div class="brand-name">AFTERSHIFT</div>
+      <div class="brand-sub">Portfolio</div>
+    </div>
+    <div class="brand-right">
+      <div class="cur-toggle" id="curToggle">
+        <span class="cur-label" id="curLabelUsd">USD</span>
+        <div class="cur-switch" id="curSwitch"><div class="cur-knob"></div></div>
+        <span class="cur-label" id="curLabelIdr">IDR</span>
+      </div>
+      <div class="live-pill"><span class="live-dot"></span><span id="lastUpdated">--:--</span></div>
+      <div class="icon-btn" id="refreshBtn">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none"><path d="M21 12a9 9 0 1 1-2.64-6.36" stroke="currentColor" stroke-width="2" stroke-linecap="round"/><path d="M21 3v6h-6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      </div>
+      <div class="icon-btn" id="menuBtn">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none"><circle cx="5" cy="12" r="1.8" fill="currentColor"/><circle cx="12" cy="12" r="1.8" fill="currentColor"/><circle cx="19" cy="12" r="1.8" fill="currentColor"/></svg>
+      </div>
+    </div>
+  </div>
+  <div class="tabs">
+    <div class="tab active" data-tab="summary">Summary</div>
+    <div class="tab" data-tab="holdings">Holdings</div>
+    <div class="tab" data-tab="watchlist">Watchlist</div>
+  </div>
+</div>
+
+<div class="wrap">
+
+  <!-- SUMMARY -->
+  <div class="view active" id="view-summary">
+    <div class="panel">
+      <div class="eyebrow"><span>Portfolio Allocation</span><span id="dataSrcTag" style="color:var(--muted2);">via CoinGecko</span></div>
+      <div class="hero-grid" style="margin-top:12px;">
+        <div class="ring-wrap">
+          <canvas id="ringCanvas" width="296" height="296" style="width:148px;height:148px; transform:translateZ(0);"></canvas>
+          <div class="ring-center">
+            <div class="ring-value mono" id="ringValue">$0.00</div>
+            <div class="ring-sub" id="ringSub">TOTAL VALUE</div>
+          </div>
+        </div>
+        <div class="hero-side">
+          <div id="heroDelta" class="hero-delta flat">— $0.00 (0.0%)</div>
+          <div class="legend" id="legendBox"></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="panel">
+      <div class="growth-head">
+        <span class="eyebrow" style="margin:0;">Portfolio Growth</span>
+        <span class="growth-range" id="growthRange"></span>
+      </div>
+      <div class="range-tabs" id="rangeTabs">
+        <span class="range-tab" data-range="7">7D</span>
+        <span class="range-tab" data-range="30">30D</span>
+        <span class="range-tab active" data-range="all">All</span>
+      </div>
+      <canvas id="growthCanvas" width="1160" height="200" style="width:100%; height:100px; display:block; transform:translateZ(0);"></canvas>
+      <div class="growth-empty" id="growthEmpty" style="display:none;">Belum ada histori — data terkumpul otomatis tiap kamu buka dashboard ini.</div>
+    </div>
+
+    <div class="stat-grid">
+      <div class="stat-cell">
+        <div class="stat-label">Total Capital <svg class="edit-pencil" data-edit="capital" width="11" height="11" viewBox="0 0 24 24" fill="none"><path d="M12 20h9" stroke="currentColor" stroke-width="2" stroke-linecap="round"/><path d="M16.5 3.5a2.1 2.1 0 0 1 3 3L7 19l-4 1 1-4Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+        <div class="stat-value mono" id="statCapital">$0.00</div>
+      </div>
+      <div class="stat-cell">
+        <div class="stat-label" id="cashLabel"><span id="cashLabelText">Available Cash</span> <svg class="edit-pencil" id="cashPencil" data-edit="cash" width="11" height="11" viewBox="0 0 24 24" fill="none"><path d="M12 20h9" stroke="currentColor" stroke-width="2" stroke-linecap="round"/><path d="M16.5 3.5a2.1 2.1 0 0 1 3 3L7 19l-4 1 1-4Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+        <div class="stat-value mono" id="statCash">$0.00</div>
+      </div>
+      <div class="stat-cell">
+        <div class="stat-label">Total PnL</div>
+        <div class="stat-value mono" id="statPnl">$0.00</div>
+      </div>
+      <div class="stat-cell">
+        <div class="stat-label">Active Positions</div>
+        <div class="stat-value mono" id="statPositions">0</div>
+      </div>
+    </div>
+
+    <div class="panel" id="realizedPanel" style="display:none;">
+      <div class="eyebrow"><span>Realized PnL (All-time)</span><span class="mono" id="realizedTotal"></span></div>
+      <div style="margin-top:10px; display:flex; justify-content:space-between; align-items:center;">
+        <span style="font-size:11px;color:var(--muted);" id="realizedCount"></span>
+        <span style="font-size:11.5px;color:var(--cyan);cursor:pointer;" id="openArchiveBtn">Lihat Archive →</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- HOLDINGS -->
+  <div class="view" id="view-holdings">
+    <div class="toolbar">
+      <div class="search">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" style="color:var(--muted2)"><circle cx="11" cy="11" r="7" stroke="currentColor" stroke-width="2"/><path d="M21 21l-4.3-4.3" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+        <input id="holdSearch" placeholder="Search token..." />
+      </div>
+      <select class="sortsel" id="holdSort">
+        <option value="value">Sort: Value</option>
+        <option value="pnl">Sort: PnL %</option>
+        <option value="alpha">Sort: A–Z</option>
+      </select>
+    </div>
+    <div id="holdingsList"></div>
+    <div class="empty-panel" id="holdingsEmpty" style="display:none;">
+      <div class="empty-title">No positions yet</div>
+      <div class="empty-sub">Add your first position to start tracking allocation & PnL in real time — any coin on CoinGecko, altcoin or big cap.</div>
+    </div>
+  </div>
+
+  <!-- WATCHLIST -->
+  <div class="view" id="view-watchlist">
+    <div id="watchList"></div>
+    <div class="empty-panel" id="watchEmpty" style="display:none;">
+      <div class="empty-title">Watchlist is empty</div>
+      <div class="empty-sub">Track tokens you don't hold yet — live prices, no position needed.</div>
+    </div>
+  </div>
+
+</div>
+
+<button class="fab" id="fabAdd">
+  <svg width="16" height="16" viewBox="0 0 24 24" fill="none"><path d="M12 5v14M5 12h14" stroke="#05060a" stroke-width="2.6" stroke-linecap="round"/></svg>
+  <span id="fabLabel">Add Position</span>
+</button>
+
+<!-- Position modal -->
+<div class="overlay" id="posOverlay">
+  <div class="sheet">
+    <div class="sheet-head">
+      <div class="sheet-title" id="posSheetTitle">Add Position</div>
+      <div class="close-x" id="posClose">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none"><path d="M6 6l12 12M18 6L6 18" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+      </div>
+    </div>
+    <div class="field">
+      <label>Search coin (CoinGecko — altcoin or big cap)</label>
+      <input id="posCoinSearch" placeholder="e.g. bitcoin, dogwifhat, chainlink..." autocomplete="off" />
+      <div class="coin-results" id="posCoinResults" style="display:none;"></div>
+      <div class="coin-selected" id="posCoinSelected" style="display:none;"></div>
+    </div>
+    <div class="row2">
+      <div class="field">
+        <label>Amount</label>
+        <input id="posAmount" type="number" inputmode="decimal" placeholder="0.00" />
+      </div>
+      <div class="field">
+        <label id="posAvgLabel">Avg Buy Price ($)</label>
+        <input id="posAvg" type="number" inputmode="decimal" placeholder="0.00" />
+      </div>
+    </div>
+    <div class="field">
+      <label>Price source</label>
+      <div class="seg">
+        <div class="seg-opt active" data-mode="auto">Live (CoinGecko)</div>
+        <div class="seg-opt" data-mode="manual">Manual</div>
+      </div>
+    </div>
+    <div class="field" id="manualPriceField" style="display:none;">
+      <label id="posManualLabel">Current Price ($)</label>
+      <input id="posManualPrice" type="number" inputmode="decimal" placeholder="0.00" />
+    </div>
+    <div class="hint" id="posHint">Live price updates from CoinGecko when you open the app or tap Refresh. If a coin isn't listed there, switch to Manual.</div>
+    <button class="btn-primary" id="posSave">Save Position</button>
+    <button class="btn-ghost" id="posDelete" style="display:none;">Delete Position</button>
+  </div>
+</div>
+
+<!-- Watchlist modal -->
+<div class="overlay" id="watchOverlay">
+  <div class="sheet">
+    <div class="sheet-head">
+      <div class="sheet-title" id="watchSheetTitle">Add to Watchlist</div>
+      <div class="close-x" id="watchClose">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none"><path d="M6 6l12 12M18 6L6 18" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+      </div>
+    </div>
+    <div class="field">
+      <label>Search coin</label>
+      <input id="watchCoinSearch" placeholder="e.g. solana, ethereum..." autocomplete="off" />
+      <div class="coin-results" id="watchCoinResults" style="display:none;"></div>
+      <div class="coin-selected" id="watchCoinSelected" style="display:none;"></div>
+    </div>
+    <div class="field">
+      <label id="watchTargetLabel">Target Buy Price ($) — opsional</label>
+      <input id="watchTarget" type="number" inputmode="decimal" placeholder="0.00" />
+      <div class="hint">Kalau harga turun sampai ke angka ini, baris koinnya bakal nyala/highlight pas kamu buka app.</div>
+    </div>
+    <button class="btn-primary" id="watchSave" disabled>Add to Watchlist</button>
+    <button class="btn-ghost" id="watchDelete" style="display:none;">Hapus dari Watchlist</button>
+  </div>
+</div>
+
+<!-- Simple value edit modal -->
+<div class="overlay" id="editOverlay">
+  <div class="sheet">
+    <div class="sheet-head">
+      <div class="sheet-title" id="editTitle">Edit value</div>
+      <div class="close-x" id="editClose">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none"><path d="M6 6l12 12M18 6L6 18" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+      </div>
+    </div>
+    <div class="field">
+      <label id="editLabel">Amount ($)</label>
+      <input id="editInput" type="number" inputmode="decimal" placeholder="0.00" />
+    </div>
+    <button class="btn-primary" id="editSave">Save</button>
+  </div>
+</div>
+
+<!-- Realized PnL Archive -->
+<div class="overlay" id="archiveOverlay">
+  <div class="sheet">
+    <div class="sheet-head">
+      <div class="sheet-title">Realized PnL Archive</div>
+      <div class="close-x" id="archiveClose">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none"><path d="M6 6l12 12M18 6L6 18" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+      </div>
+    </div>
+    <div id="archiveList"></div>
+    <div class="empty-panel" id="archiveEmpty" style="display:none;">
+      <div class="empty-title">Belum ada posisi ditutup</div>
+      <div class="empty-sub">Setiap kamu hapus posisi dari Holdings, catatannya bakal muncul di sini.</div>
+    </div>
+  </div>
+</div>
+
+<!-- Backup & Restore -->
+<div class="overlay" id="menuOverlay">
+  <div class="sheet">
+    <div class="sheet-head">
+      <div class="sheet-title">Backup & Restore</div>
+      <div class="close-x" id="menuClose">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none"><path d="M6 6l12 12M18 6L6 18" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+      </div>
+    </div>
+    <div class="hint" style="margin-bottom:14px;">Data cuma tersimpan di browser ini. Export rutin (misal tiap minggu) supaya nggak hilang kalau HP di-reset atau ganti device.</div>
+    <button class="btn-primary" id="exportBtn">Export Backup (.json)</button>
+    <button class="btn-primary" id="importBtn" style="background:var(--panel); color:var(--text); border:1px solid var(--line);">Import Backup</button>
+    <input type="file" id="importFile" accept="application/json" style="display:none;" />
+    <div class="hint" style="margin-top:10px; color:var(--neg);">⚠ Import akan menimpa semua data yang ada sekarang.</div>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+/* ---------------- Popular presets (CoinGecko ids) — big caps + Solana/alt ecosystem ---------------- */
+const PRESETS = [
+  {id:"bitcoin", symbol:"BTC", name:"Bitcoin"},
+  {id:"ethereum", symbol:"ETH", name:"Ethereum"},
+  {id:"solana", symbol:"SOL", name:"Solana"},
+  {id:"binancecoin", symbol:"BNB", name:"BNB"},
+  {id:"ripple", symbol:"XRP", name:"XRP"},
+  {id:"cardano", symbol:"ADA", name:"Cardano"},
+  {id:"dogecoin", symbol:"DOGE", name:"Dogecoin"},
+  {id:"avalanche-2", symbol:"AVAX", name:"Avalanche"},
+  {id:"chainlink", symbol:"LINK", name:"Chainlink"},
+  {id:"polkadot", symbol:"DOT", name:"Polkadot"},
+  {id:"matic-network", symbol:"MATIC", name:"Polygon"},
+  {id:"litecoin", symbol:"LTC", name:"Litecoin"},
+  {id:"tron", symbol:"TRX", name:"TRON"},
+  {id:"shiba-inu", symbol:"SHIB", name:"Shiba Inu"},
+  {id:"uniswap", symbol:"UNI", name:"Uniswap"},
+  {id:"cosmos", symbol:"ATOM", name:"Cosmos"},
+  {id:"near", symbol:"NEAR", name:"NEAR Protocol"},
+  {id:"aptos", symbol:"APT", name:"Aptos"},
+  {id:"arbitrum", symbol:"ARB", name:"Arbitrum"},
+  {id:"optimism", symbol:"OP", name:"Optimism"},
+  {id:"sui", symbol:"SUI", name:"Sui"},
+  {id:"the-open-network", symbol:"TON", name:"Toncoin"},
+  {id:"internet-computer", symbol:"ICP", name:"Internet Computer"},
+  {id:"filecoin", symbol:"FIL", name:"Filecoin"},
+  {id:"injective-protocol", symbol:"INJ", name:"Injective"},
+  {id:"sei-network", symbol:"SEI", name:"Sei"},
+  {id:"pepe", symbol:"PEPE", name:"Pepe"},
+  {id:"bonk", symbol:"BONK", name:"Bonk"},
+  {id:"dogwifcoin", symbol:"WIF", name:"dogwifhat"},
+  {id:"jupiter-exchange-solana", symbol:"JUP", name:"Jupiter"},
+  {id:"pyth-network", symbol:"PYTH", name:"Pyth Network"},
+  {id:"jito-governance-token", symbol:"JTO", name:"Jito"},
+  {id:"raydium", symbol:"RAY", name:"Raydium"},
+  {id:"aave", symbol:"AAVE", name:"Aave"},
+  {id:"maker", symbol:"MKR", name:"Maker"},
+];
+const PALETTE = ["#4ac8f0","#9d8cf5","#9d8cf5","#ff5d7a","#4ade80","#60a5fa","#f472b6","#facc15","#4ac8f0","#818cf8"];
+const CG_BASE = "https://api.coingecko.com/api/v3";
+const COINGECKO_DEMO_KEY = "CG-erufvnoBwgSbzSzwXCgs4DR1"; // paste your free CoinGecko Demo API key here once registered
+const COINGECKO_KEY_PARAM = COINGECKO_DEMO_KEY ? `&x_cg_demo_api_key=${COINGECKO_DEMO_KEY}` : "";
+
+let state = { holdings: [], watchlist: [], capital: 0, cash: 0, currency: 'USD', history: [], realized: [] };
+let priceData = {}; // coinId -> {usd, image}
+let idrRate = 16300; // fallback, replaced by live CoinGecko tether/idr rate
+let editTarget = null;
+let editingHoldIdx = null;
+let posSelectedCoin = null;
+let watchSelectedCoin = null;
+let editingWatchIdx = null;
+let liveDataEverWorked = false;
+let liveFailNotified = false;
+
+function setDataSrcTag(ok){
+  const tag = $('dataSrcTag');
+  if(!tag) return;
+  if(ok){
+    tag.textContent = 'via CoinGecko';
+    tag.style.color = 'var(--muted2)';
+  }else{
+    tag.textContent = '⚠ live data blocked here';
+    tag.style.color = 'var(--amber)';
+  }
+}
+
+const $ = (id) => document.getElementById(id);
+
+const fmt = (nUsd) => {
+  const n = Number(nUsd)||0;
+  if(state.currency === 'IDR'){
+    return "Rp" + Math.round(n * idrRate).toLocaleString("id-ID");
+  }
+  return "$" + n.toLocaleString("en-US",{minimumFractionDigits:2,maximumFractionDigits:2});
+};
+const fmtCompact = (nUsd) => {
+  const n = Number(nUsd)||0;
+  if(state.currency === 'IDR'){
+    const idr = n * idrRate;
+    const abs = Math.abs(idr);
+    const sign = idr < 0 ? "-" : "";
+    if(abs >= 1e9) return sign + "Rp" + (abs/1e9).toFixed(2).replace('.',',') + " M";
+    if(abs >= 1e6) return sign + "Rp" + (abs/1e6).toFixed(2).replace('.',',') + " Jt";
+    return sign + "Rp" + Math.round(abs).toLocaleString("id-ID");
+  }
+  const abs = Math.abs(n);
+  const sign = n < 0 ? "-" : "";
+  if(abs >= 1e6) return sign + "$" + (abs/1e6).toFixed(2) + "M";
+  if(abs >= 1e3) return sign + "$" + (abs/1e3).toFixed(1) + "K";
+  return fmt(n);
+};
+const fmtPx = (nUsd) => {
+  let n = Number(nUsd)||0;
+  if(state.currency === 'IDR'){
+    const idr = n * idrRate;
+    if(idr === 0) return "Rp0";
+    if(idr < 1) return "Rp" + idr.toFixed(6);
+    if(idr < 1000) return "Rp" + idr.toFixed(2);
+    return "Rp" + Math.round(idr).toLocaleString("id-ID");
+  }
+  if(n === 0) return "$0.00";
+  if(n < 0.01) return "$" + n.toFixed(8).replace(/0+$/,'').replace(/\.$/,'.0');
+  if(n < 1) return "$" + n.toFixed(5);
+  return "$" + n.toLocaleString("en-US",{minimumFractionDigits:2,maximumFractionDigits:2});
+};
+function formatDuration(dateAdded, endDate){
+  if(!dateAdded) return '';
+  const end = endDate || Date.now();
+  const days = Math.floor((end-dateAdded)/86400000);
+  if(days < 1) return 'Hari ini';
+  if(days < 30) return days + ' hari';
+  if(days < 365) return Math.floor(days/30) + ' bulan';
+  const years = Math.floor(days/365);
+  const remMonths = Math.floor((days%365)/30);
+  return years + ' thn' + (remMonths>0 ? ' '+remMonths+' bln' : '');
+}
+
+/* ---------------- Storage ---------------- */
+const STORAGE_KEY = 'aftershift-portfolio-data';
+async function loadData(){
+  try{
+    const raw = localStorage.getItem(STORAGE_KEY);
+    if(raw){
+      const parsed = JSON.parse(raw);
+      state = Object.assign({holdings:[],watchlist:[],capital:0,cash:0,currency:'USD',history:[],realized:[]}, parsed);
+    }
+  }catch(e){ /* no data yet, or storage unavailable */ }
+  updateCurToggleUI();
+  renderAll();
+}
+async function saveData(){
+  try{
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
+  }catch(e){
+    showToast("Storage error — changes may not persist");
+  }
+}
+
+/* ---------------- CoinGecko: prices ---------------- */
+async function fetchWithRetry(url, retries=2, backoffMs=900){
+  for(let attempt=0; attempt<=retries; attempt++){
+    try{
+      const resp = await fetch(url);
+      if(resp.ok) return resp;
+      if(resp.status === 429 && attempt < retries){
+        await new Promise(r=>setTimeout(r, backoffMs * (attempt+1)));
+        continue;
+      }
+      throw new Error('HTTP '+resp.status);
+    }catch(e){
+      if(attempt < retries){
+        await new Promise(r=>setTimeout(r, backoffMs * (attempt+1)));
+        continue;
+      }
+      throw e;
+    }
+  }
+}
+
+async function fetchPrices(){
+  const ids = new Set(['tether']); // always include tether to derive USD->IDR rate
+  state.holdings.forEach(h => { if(h.mode==='auto' && h.coinId) ids.add(h.coinId); });
+  state.watchlist.forEach(w => { if(w.coinId) ids.add(w.coinId); });
+  let fetchSucceeded = false;
+
+  $('refreshBtn').classList.add('spin');
+  try{
+    const idsParam = Array.from(ids).join(',');
+    const resp = await fetchWithRetry(`${CG_BASE}/simple/price?ids=${idsParam}&vs_currencies=usd,idr&include_24hr_change=true${COINGECKO_KEY_PARAM}`);
+    const json = await resp.json();
+    if(json){
+      Object.keys(json).forEach(id=>{
+        priceData[id] = priceData[id] || {};
+        priceData[id].usd = json[id].usd;
+        priceData[id].change24h = json[id].usd_24h_change;
+      });
+      if(json.tether && json.tether.idr && json.tether.usd){
+        idrRate = json.tether.idr / json.tether.usd;
+      }
+    }
+    const now = new Date();
+    $('lastUpdated').textContent = now.toLocaleTimeString('en-GB',{hour:'2-digit',minute:'2-digit'});
+    recordHistorySnapshot();
+    liveDataEverWorked = true;
+    setDataSrcTag(true);
+    fetchSucceeded = true;
+  }catch(e){
+    setDataSrcTag(false);
+    if(!liveFailNotified){
+      liveFailNotified = true;
+      showToast("Gagal ambil harga live — kemungkinan rate-limit CoinGecko. Coba refresh lagi sebentar.");
+    }
+  }finally{
+    $('refreshBtn').classList.remove('spin');
+    renderAll();
+    if(fetchSucceeded) flashPnlElements();
+  }
+}
+
+function flashPnlElements(){
+  const targets = [$('statPnl'), $('heroDelta'), ...document.querySelectorAll('.row-pnl')];
+  targets.forEach(el=>{
+    if(!el) return;
+    const cls = el.classList.contains('neg') || el.style.color === 'var(--neg)' ? 'flash-neg' : 'flash-pos';
+    el.classList.remove('flash-pos','flash-neg');
+    void el.offsetWidth; // restart animation
+    el.classList.add(cls);
+  });
+}
+
+function currentPrice(item){
+  if(item.mode === 'manual') return item.manualPrice || 0;
+  return (priceData[item.coinId] && priceData[item.coinId].usd) || 0;
+}
+
+/* ---------------- CoinGecko: coin search ---------------- */
+let searchDebounce;
+function renderCoinRows(resultsEl, coins, onPick, inputEl){
+  resultsEl.innerHTML = '';
+  coins.forEach(c=>{
+    const row = document.createElement('div');
+    row.className = 'coin-item';
+    row.innerHTML = `<img src="${c.image||''}" onerror="this.style.display='none'"/>
+      <div><div class="coin-item-name">${c.name}</div><div class="coin-item-sym">${c.symbol}${c.rank?' · rank '+c.rank:''}</div></div>`;
+    row.addEventListener('click', ()=>{
+      onPick({id:c.id, symbol:c.symbol, name:c.name, image:c.image});
+      resultsEl.style.display='none'; resultsEl.innerHTML=''; inputEl.value='';
+    });
+    resultsEl.appendChild(row);
+  });
+  resultsEl.style.display='block';
+}
+function localPresetMatches(q){
+  const ql = q.toLowerCase();
+  return PRESETS.filter(p => p.symbol.toLowerCase().includes(ql) || p.name.toLowerCase().includes(ql))
+    .map(p => ({id:p.id, symbol:p.symbol, name:p.name, image:''}));
+}
+function wireCoinSearch(inputEl, resultsEl, selectedEl, onPick){
+  inputEl.addEventListener('input', ()=>{
+    clearTimeout(searchDebounce);
+    const q = inputEl.value.trim();
+    if(q.length < 2){ resultsEl.style.display='none'; resultsEl.innerHTML=''; return; }
+
+    // Instant local match first — no API call needed for common coins
+    const local = localPresetMatches(q);
+    if(local.length){ renderCoinRows(resultsEl, local, onPick, inputEl); }
+    else{ resultsEl.innerHTML = '<div class="coin-item" style="color:var(--muted);">Mencari...</div>'; resultsEl.style.display='block'; }
+
+    searchDebounce = setTimeout(async ()=>{
+      try{
+        const resp = await fetchWithRetry(`${CG_BASE}/search?query=${encodeURIComponent(q)}${COINGECKO_KEY_PARAM}`, 1, 700);
+        const json = await resp.json();
+        const coins = (json.coins||[]).slice(0,8).map(c=>({id:c.id, symbol:c.symbol.toUpperCase(), name:c.name, image:c.thumb, rank:c.market_cap_rank}));
+        if(coins.length===0 && local.length===0){
+          resultsEl.innerHTML = '<div class="coin-item" style="color:var(--muted);">Tidak ditemukan — coba nama lengkap, atau pakai mode Manual</div>';
+          resultsEl.style.display='block';
+          return;
+        }
+        if(coins.length){ renderCoinRows(resultsEl, coins, onPick, inputEl); }
+      }catch(e){
+        // Live search failed (network/CORS/rate-limit) — keep local matches if any
+        if(local.length===0){
+          resultsEl.innerHTML = '<div class="coin-item" style="color:var(--muted);">Live search gagal (jaringan/rate-limit) — coba lagi sebentar, atau pakai mode Manual</div>';
+          resultsEl.style.display='block';
+        }
+      }
+    }, 350);
+  });
+}
+function showSelectedCoin(selectedEl, coin){
+  if(!coin){ selectedEl.style.display='none'; selectedEl.innerHTML=''; return; }
+  selectedEl.style.display='flex';
+  selectedEl.innerHTML = `<img src="${coin.image||''}" onerror="this.style.display='none'"/>
+    <span>${coin.name} <span style="color:var(--muted);">(${coin.symbol})</span></span>
+    <span class="coin-clear" id="clearCoinBtn">Change</span>`;
+}
+
+/* ---------------- Portfolio growth history ---------------- */
+function totalPortfolioValueUsd(){
+  let total = 0;
+  state.holdings.forEach(h=>{ total += currentPrice(h) * (parseFloat(h.amount)||0); });
+  return total;
+}
+function recordHistorySnapshot(){
+  const val = totalPortfolioValueUsd();
+  if(val <= 0) return;
+  const today = new Date().toISOString().slice(0,10);
+  const last = state.history[state.history.length-1];
+  if(last && last.d === today){
+    last.v = val; // update today's snapshot
+  }else{
+    state.history.push({d: today, v: val});
+    if(state.history.length > 180) state.history.shift();
+  }
+  saveData();
+}
+let selectedRange = 'all';
+function drawGrowthChart(){
+  const c = $('growthCanvas'); const ctx = c.getContext('2d');
+  const w=c.width, h=c.height;
+  ctx.clearRect(0,0,w,h);
+  let hist = state.history;
+  if(selectedRange !== 'all'){
+    const days = parseInt(selectedRange);
+    const cutoff = Date.now() - days*86400000;
+    hist = hist.filter(p => new Date(p.d).getTime() >= cutoff);
+  }
+  $('growthEmpty').style.display = hist.length < 2 ? 'block' : 'none';
+  $('growthCanvas').style.display = hist.length < 2 ? 'none' : 'block';
+  if(hist.length < 2){ $('growthRange').textContent=''; return; }
+
+  $('growthRange').textContent = hist[0].d + ' → ' + hist[hist.length-1].d;
+
+  const vals = hist.map(p=>p.v);
+  const min = Math.min(...vals), max = Math.max(...vals);
+  const pad = 14;
+  const range = (max-min) || 1;
+  const stepX = (w-pad*2) / (hist.length-1);
+
+  ctx.beginPath();
+  hist.forEach((p,i)=>{
+    const x = pad + i*stepX;
+    const y = h - pad - ((p.v-min)/range)*(h-pad*2);
+    if(i===0) ctx.moveTo(x,y); else ctx.lineTo(x,y);
+  });
+  const grad = ctx.createLinearGradient(0,0,0,h);
+  grad.addColorStop(0,'rgba(74,200,240,0.35)');
+  grad.addColorStop(1,'rgba(74,200,240,0)');
+  ctx.lineTo(pad+(hist.length-1)*stepX, h-pad);
+  ctx.lineTo(pad, h-pad);
+  ctx.closePath();
+  ctx.fillStyle = grad;
+  ctx.fill();
+
+  ctx.beginPath();
+  hist.forEach((p,i)=>{
+    const x = pad + i*stepX;
+    const y = h - pad - ((p.v-min)/range)*(h-pad*2);
+    if(i===0) ctx.moveTo(x,y); else ctx.lineTo(x,y);
+  });
+  ctx.strokeStyle = '#4ac8f0';
+  ctx.lineWidth = 3;
+  ctx.lineJoin='round';
+  ctx.stroke();
+
+  const lastX = pad+(hist.length-1)*stepX;
+  const lastY = h - pad - ((vals[vals.length-1]-min)/range)*(h-pad*2);
+  ctx.beginPath();
+  ctx.arc(lastX,lastY,5,0,Math.PI*2);
+  ctx.fillStyle = '#4ac8f0';
+  ctx.shadowColor = '#4ac8f0'; ctx.shadowBlur = 10;
+  ctx.fill();
+  ctx.shadowBlur = 0;
+}
+
+/* ---------------- Rendering ---------------- */
+function renderAll(){
+  renderSummary();
+  renderHoldings();
+  renderWatchlist();
+  drawGrowthChart();
+  renderRealized();
+}
+
+function renderRealized(){
+  const panel = $('realizedPanel');
+  if(!state.realized || state.realized.length===0){ panel.style.display='none'; return; }
+  panel.style.display='block';
+  const total = state.realized.reduce((s,r)=>s+r.pnlAbs, 0);
+  const totalEl = $('realizedTotal');
+  totalEl.textContent = (total>=0?'+':'') + fmtCompact(total);
+  totalEl.style.color = total>=0 ? 'var(--pos)' : 'var(--neg)';
+  $('realizedCount').textContent = state.realized.length + ' posisi ditutup';
+}
+
+function renderArchiveList(){
+  const list = $('archiveList');
+  list.innerHTML = '';
+  $('archiveEmpty').style.display = (!state.realized || state.realized.length===0) ? 'block' : 'none';
+  if(!state.realized) return;
+
+  const indexed = state.realized.map((r,i)=>({r,i}));
+  indexed.reverse().forEach(({r,i})=>{
+    const dateStr = new Date(r.dateClosed).toLocaleDateString('id-ID',{day:'2-digit',month:'short',year:'numeric'});
+    const durationStr = r.dateOpened ? formatDuration(r.dateOpened, r.dateClosed) : '—';
+    const row = document.createElement('div');
+    row.className = 'row-card';
+    row.style.marginBottom = '9px';
+    row.innerHTML = `
+      <div class="row-badge">${r.image ? `<img src="${r.image}" onerror="this.parentElement.textContent='${r.symbol.slice(0,3)}'"/>` : r.symbol.slice(0,3).toUpperCase()}</div>
+      <div class="row-main">
+        <div class="row-top"><span class="row-sym">${r.symbol}</span></div>
+        <div class="row-sub">Entry ${fmtPx(r.avgBuy)} → Exit ${fmtPx(r.sellPrice)}</div>
+        <div class="row-duration">⏱ Dipegang ${durationStr} · Ditutup ${dateStr}</div>
+      </div>
+      <div class="row-end">
+        <div class="row-pnl" style="color:${r.pnlAbs>=0?'var(--pos)':'var(--neg)'}">${r.pnlAbs>=0?'+':''}${r.pnlPct.toFixed(1)}%</div>
+        <div class="row-pnl-abs" style="color:${r.pnlAbs>=0?'var(--pos)':'var(--neg)'}">${r.pnlAbs>=0?'+':''}${fmtCompact(r.pnlAbs)}</div>
+      </div>
+      <div class="row-actions">
+        <div class="mini-btn" data-del-realized="${i}">
+          <svg width="12" height="12" viewBox="0 0 24 24" fill="none"><path d="M3 6h18M8 6V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2m3 0-1 14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2L4 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </div>
+      </div>
+    `;
+    list.appendChild(row);
+  });
+  list.querySelectorAll('[data-del-realized]').forEach(btn=>{
+    btn.addEventListener('click', ()=>{
+      if(!confirm("Hapus catatan realized PnL ini? Nggak bisa dibalikin.")) return;
+      state.realized.splice(parseInt(btn.dataset.delRealized), 1);
+      saveData();
+      renderRealized();
+      renderArchiveList();
+      showToast("Catatan dihapus");
+    });
+  });
+}
+
+function renderSummary(){
+  let totalValue = 0, totalCost = 0;
+  const alloc = [];
+  state.holdings.forEach(h=>{
+    const px = currentPrice(h);
+    const val = px * (parseFloat(h.amount)||0);
+    const cost = (parseFloat(h.avgBuy)||0) * (parseFloat(h.amount)||0);
+    totalValue += val; totalCost += cost;
+    if(val > 0) alloc.push({symbol:h.symbol, value:val});
+  });
+  const pnl = totalValue - totalCost;
+  const pnlPct = totalCost > 0 ? (pnl/totalCost*100) : 0;
+
+  $('ringValue').textContent = fmtCompact(totalValue);
+  $('statCapital').textContent = fmtCompact(state.capital);
+
+  const usdtHolding = state.holdings.find(h => h.coinId === 'tether');
+  const cashLabel = $('cashLabelText');
+  const cashPencil = $('cashPencil');
+  if(usdtHolding){
+    const cashValue = currentPrice(usdtHolding) * (parseFloat(usdtHolding.amount)||0);
+    $('statCash').textContent = fmtCompact(cashValue);
+    if(cashLabel) cashLabel.innerHTML = 'Available Cash <span style="color:var(--cyan);font-size:9px;">🔗 USDT</span>';
+    if(cashPencil) cashPencil.style.display = 'none';
+  }else{
+    $('statCash').textContent = fmtCompact(state.cash);
+    if(cashLabel) cashLabel.textContent = 'Available Cash';
+    if(cashPencil) cashPencil.style.display = 'inline';
+  }
+  $('statPositions').textContent = state.holdings.length;
+
+  const pnlEl = $('statPnl');
+  pnlEl.textContent = (pnl>=0?"+":"") + fmtCompact(pnl);
+  pnlEl.className = "stat-value mono " + (pnl>0?"pos":pnl<0?"neg":"");
+
+  const delta = $('heroDelta');
+  const sign = pnl>0?"+":pnl<0?"−":"—";
+  delta.textContent = `${sign} ${fmt(Math.abs(pnl))} (${Math.abs(pnlPct).toFixed(1)}%)`;
+  delta.className = "hero-delta " + (pnl>0?"pos":pnl<0?"neg":"flat");
+
+  drawRing(alloc, totalValue);
+
+  alloc.sort((a,b)=>b.value-a.value);
+  const legend = $('legendBox');
+  legend.innerHTML = '';
+  if(alloc.length===0){
+    legend.innerHTML = `<div style="font-size:11.5px;color:var(--muted);">No positions to allocate yet.</div>`;
+  }else{
+    alloc.slice(0,6).forEach((a,i)=>{
+      const pct = totalValue>0 ? (a.value/totalValue*100) : 0;
+      const row = document.createElement('div');
+      row.className = 'legend-row';
+      row.innerHTML = `<span class="legend-dot" style="background:${PALETTE[i%PALETTE.length]}"></span>
+        <span class="legend-sym">${a.symbol}</span>
+        <span class="legend-pct">${pct.toFixed(1)}%</span>`;
+      legend.appendChild(row);
+    });
+  }
+}
+
+function drawRing(alloc, total){
+  const c = $('ringCanvas'); const ctx = c.getContext('2d');
+  const w=c.width, h=c.height, cx=w/2, cy=h/2, r=w/2-14, lw=20;
+  ctx.clearRect(0,0,w,h);
+  ctx.strokeStyle = 'rgba(120,140,180,0.12)';
+  ctx.lineWidth = lw;
+  ctx.beginPath(); ctx.arc(cx,cy,r,0,Math.PI*2); ctx.stroke();
+  if(total<=0 || alloc.length===0) return;
+  let start = -Math.PI/2;
+  alloc.sort((a,b)=>b.value-a.value).forEach((a,i)=>{
+    const frac = a.value/total;
+    const end = start + frac*Math.PI*2;
+    ctx.strokeStyle = PALETTE[i%PALETTE.length];
+    ctx.lineWidth = lw;
+    ctx.lineCap = 'butt';
+    ctx.beginPath(); ctx.arc(cx,cy,r,start,end); ctx.stroke();
+    start = end;
+  });
+}
+
+function renderHoldings(){
+  const list = $('holdingsList');
+  const search = ($('holdSearch').value||'').toLowerCase();
+  const sortMode = $('holdSort').value;
+  let items = state.holdings.map((h,idx)=>({...h, idx}));
+  if(search) items = items.filter(h=>h.symbol.toLowerCase().includes(search) || (h.name||'').toLowerCase().includes(search));
+
+  items.forEach(h=>{
+    h._px = currentPrice(h);
+    h._val = h._px * (parseFloat(h.amount)||0);
+    h._cost = (parseFloat(h.avgBuy)||0)*(parseFloat(h.amount)||0);
+    h._pnlPct = h._cost>0 ? ((h._val-h._cost)/h._cost*100) : 0;
+  });
+  if(sortMode==='value') items.sort((a,b)=>b._val-a._val);
+  else if(sortMode==='pnl') items.sort((a,b)=>b._pnlPct-a._pnlPct);
+  else items.sort((a,b)=>a.symbol.localeCompare(b.symbol));
+
+  list.innerHTML = '';
+  $('holdingsEmpty').style.display = state.holdings.length===0 ? 'block' : 'none';
+
+  items.forEach(h=>{
+    const pnlAbs = h._val - h._cost;
+    const durationStr = formatDuration(h.dateAdded);
+    const row = document.createElement('div');
+    row.className = 'row-card';
+    row.innerHTML = `
+      <div class="row-badge">${h.image ? `<img src="${h.image}" onerror="this.parentElement.textContent='${h.symbol.slice(0,3)}'"/>` : h.symbol.slice(0,3).toUpperCase()}</div>
+      <div class="row-main">
+        <div class="row-top">
+          <span class="row-sym">${h.symbol}</span>
+          <span class="row-tag">${h.mode==='auto'?'LIVE':'MANUAL'}</span>
+        </div>
+        <div class="row-sub">${h.amount} @ ${fmtPx(h._px)}</div>
+        ${durationStr ? `<div class="row-duration">⏱ ${durationStr}</div>` : ''}
+      </div>
+      <div class="row-end">
+        <div class="row-value">${fmt(h._val)}</div>
+        <div class="row-pnl" style="color:${pnlAbs>=0?'var(--pos)':'var(--neg)'}">${pnlAbs>=0?'+':''}${h._pnlPct.toFixed(1)}%</div>
+        <div class="row-pnl-abs" style="color:${pnlAbs>=0?'var(--pos)':'var(--neg)'}">${pnlAbs>=0?'+':''}${fmtCompact(pnlAbs)}</div>
+      </div>
+      <div class="row-actions">
+        <div class="mini-btn" data-edit-hold="${h.idx}">
+          <svg width="12" height="12" viewBox="0 0 24 24" fill="none"><path d="M12 20h9" stroke="currentColor" stroke-width="2" stroke-linecap="round"/><path d="M16.5 3.5a2.1 2.1 0 0 1 3 3L7 19l-4 1 1-4Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </div>
+      </div>
+    `;
+    list.appendChild(row);
+  });
+
+  list.querySelectorAll('[data-edit-hold]').forEach(btn=>{
+    btn.addEventListener('click', ()=> openPositionModal(parseInt(btn.dataset.editHold)));
+  });
+}
+
+function renderWatchlist(){
+  const list = $('watchList');
+  list.innerHTML = '';
+  $('watchEmpty').style.display = state.watchlist.length===0 ? 'block' : 'none';
+  state.watchlist.forEach((w,idx)=>{
+    const pdata = priceData[w.coinId] || {};
+    const px = pdata.usd || 0;
+    const chg = pdata.change24h;
+    const chgStr = (typeof chg === 'number') ? `${chg>=0?'+':''}${chg.toFixed(1)}% 24h` : '';
+    const target = parseFloat(w.targetPrice) || 0;
+    const targetHit = target > 0 && px > 0 && px <= target;
+    const row = document.createElement('div');
+    row.className = 'row-card' + (targetHit ? ' target-hit' : '');
+    row.innerHTML = `
+      <div class="row-badge">${w.image ? `<img src="${w.image}" onerror="this.parentElement.textContent='${w.symbol.slice(0,3)}'"/>` : w.symbol.slice(0,3).toUpperCase()}</div>
+      <div class="row-main">
+        <div class="row-top">
+          <span class="row-sym">${w.symbol}</span>
+          ${targetHit ? '<span class="row-tag target-badge">🎯 TARGET</span>' : ''}
+        </div>
+        <div class="row-sub">${target>0 ? 'Target: '+fmtPx(target) : (w.name||'')}</div>
+      </div>
+      <div class="row-end">
+        <div class="row-value">${px>0?fmtPx(px):'—'}</div>
+        <div class="row-pnl" style="color:${(chg||0)>=0?'var(--pos)':'var(--neg)'}">${chgStr}</div>
+      </div>
+      <div class="row-actions">
+        <div class="mini-btn" data-edit-watch="${idx}">
+          <svg width="12" height="12" viewBox="0 0 24 24" fill="none"><path d="M12 20h9" stroke="currentColor" stroke-width="2" stroke-linecap="round"/><path d="M16.5 3.5a2.1 2.1 0 0 1 3 3L7 19l-4 1 1-4Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </div>
+      </div>
+    `;
+    list.appendChild(row);
+  });
+  list.querySelectorAll('[data-edit-watch]').forEach(btn=>{
+    btn.addEventListener('click', ()=> openWatchModal(parseInt(btn.dataset.editWatch)));
+  });
+}
+
+/* ---------------- Tabs ---------------- */
+document.querySelectorAll('.tab').forEach(t=>{
+  t.addEventListener('click', ()=>{
+    document.querySelectorAll('.tab').forEach(x=>x.classList.remove('active'));
+    document.querySelectorAll('.view').forEach(x=>x.classList.remove('active'));
+    t.classList.add('active');
+    $('view-'+t.dataset.tab).classList.add('active');
+    $('fabLabel').textContent = t.dataset.tab==='watchlist' ? 'Add to Watchlist' : 'Add Position';
+  });
+});
+
+/* ---------------- Currency toggle ---------------- */
+function updateCurToggleUI(){
+  const active = state.currency === 'IDR';
+  $('curSwitch').classList.toggle('active', active);
+  $('curLabelUsd').classList.toggle('on', !active);
+  $('curLabelIdr').classList.toggle('on', active);
+}
+$('curToggle').addEventListener('click', ()=>{
+  state.currency = state.currency === 'USD' ? 'IDR' : 'USD';
+  updateCurToggleUI();
+  saveData();
+  renderAll();
+});
+
+/* ---------------- Position modal ---------------- */
+function populatePresetChips(){ /* presets used only as quick-fill via search prefill below */ }
+
+function openPositionModal(idx){
+  editingHoldIdx = (idx===undefined) ? null : idx;
+  const h = editingHoldIdx!==null ? state.holdings[editingHoldIdx] : null;
+  const isIdr = state.currency === 'IDR';
+  $('posSheetTitle').textContent = h ? 'Edit Position' : 'Add Position';
+  $('posDelete').style.display = h ? 'block' : 'none';
+  $('posAvgLabel').textContent = 'Avg Buy Price ' + (isIdr ? '(Rp)' : '($)');
+  $('posManualLabel').textContent = 'Current Price ' + (isIdr ? '(Rp)' : '($)');
+  $('posAmount').value = h ? h.amount : '';
+  $('posAvg').value = h ? (isIdr ? Math.round(h.avgBuy * idrRate) : h.avgBuy) : '';
+  $('posManualPrice').value = h && h.manualPrice ? (isIdr ? Math.round(h.manualPrice * idrRate) : h.manualPrice) : '';
+  posSelectedCoin = h ? {id:h.coinId, symbol:h.symbol, name:h.name, image:h.image} : null;
+  $('posCoinSearch').value = '';
+  $('posCoinResults').style.display='none';
+  showSelectedCoin($('posCoinSelected'), posSelectedCoin);
+  setMode(h ? h.mode : 'auto');
+  $('posOverlay').classList.add('show');
+}
+function setMode(mode){
+  document.querySelectorAll('#posOverlay .seg-opt').forEach(o=>o.classList.toggle('active', o.dataset.mode===mode));
+  $('manualPriceField').style.display = mode==='manual' ? 'block':'none';
+  $('posOverlay').dataset.mode = mode;
+}
+document.querySelectorAll('#posOverlay .seg-opt').forEach(o=>{
+  o.addEventListener('click', ()=> setMode(o.dataset.mode));
+});
+
+wireCoinSearch($('posCoinSearch'), $('posCoinResults'), $('posCoinSelected'), (coin)=>{
+  posSelectedCoin = coin;
+  showSelectedCoin($('posCoinSelected'), coin);
+});
+$('posCoinSelected').addEventListener('click', (e)=>{
+  if(e.target.id==='clearCoinBtn'){ posSelectedCoin=null; showSelectedCoin($('posCoinSelected'), null); }
+});
+
+function openWatchModal(idx){
+  editingWatchIdx = (idx===undefined) ? null : idx;
+  const w = editingWatchIdx!==null ? state.watchlist[editingWatchIdx] : null;
+  const isIdr = state.currency === 'IDR';
+  $('watchSheetTitle').textContent = w ? 'Edit Watchlist' : 'Add to Watchlist';
+  $('watchDelete').style.display = w ? 'block' : 'none';
+  $('watchTargetLabel').textContent = 'Target Buy Price ' + (isIdr ? '(Rp)' : '($)') + ' — opsional';
+  watchSelectedCoin = w ? {id:w.coinId, symbol:w.symbol, name:w.name, image:w.image} : null;
+  $('watchCoinSearch').value = '';
+  $('watchCoinResults').style.display = 'none';
+  showSelectedCoin($('watchCoinSelected'), watchSelectedCoin);
+  $('watchTarget').value = w && w.targetPrice ? (isIdr ? Math.round(w.targetPrice * idrRate) : w.targetPrice) : '';
+  $('watchSave').disabled = !watchSelectedCoin;
+  $('watchOverlay').classList.add('show');
+}
+
+$('fabAdd').addEventListener('click', ()=>{
+  const activeTab = document.querySelector('.tab.active').dataset.tab;
+  if(activeTab==='watchlist'){ openWatchModal(); } else{ openPositionModal(); }
+});
+$('posClose').addEventListener('click', ()=> $('posOverlay').classList.remove('show'));
+$('posSave').addEventListener('click', ()=>{
+  const isIdr = state.currency === 'IDR';
+  const amount = parseFloat($('posAmount').value)||0;
+  let avgBuy = parseFloat($('posAvg').value)||0;
+  const mode = $('posOverlay').dataset.mode || 'auto';
+  let manualPrice = parseFloat($('posManualPrice').value)||0;
+  if(isIdr){
+    avgBuy = avgBuy / (idrRate||1);
+    manualPrice = manualPrice / (idrRate||1);
+  }
+
+  if(!posSelectedCoin){ showToast("Search and select a coin first"); return; }
+  if(amount<=0){ showToast("Amount is required"); return; }
+  if(mode==='manual' && manualPrice<=0){ showToast("Enter a manual price"); return; }
+
+  // Sanity check: catch currency-scale typos (e.g. typing USD price while field expects IDR)
+  const refPrice = priceData[posSelectedCoin.id] ? priceData[posSelectedCoin.id].usd : 0;
+  if(avgBuy > 0 && refPrice > 0){
+    const ratio = refPrice / avgBuy;
+    if(ratio > 50 || ratio < 0.02){
+      const proceed = confirm(`Avg Buy Price kelihatan jauh banget dari harga pasar sekarang (${fmtPx(refPrice)}). Ini beneran harga beli kamu? Kalau salah ketik skala (USD vs IDR), cek lagi sebelum lanjut.`);
+      if(!proceed) return;
+    }
+  }
+
+  // Auto-deduct USDT: only for brand-new positions (not edits), and not when the position itself is USDT
+  const isNewPosition = editingHoldIdx===null;
+  const isUsdtItself = posSelectedCoin.id === 'tether';
+  if(isNewPosition && !isUsdtItself){
+    const usdtHolding = state.holdings.find(h => h.coinId === 'tether');
+    if(usdtHolding){
+      const usdtBalance = parseFloat(usdtHolding.amount)||0;
+      const costUsd = amount * avgBuy;
+      if(costUsd > usdtBalance){
+        const shortfall = costUsd - usdtBalance;
+        showToast(`Saldo USDT nggak cukup — kurang ${fmtCompact(shortfall)}. Edit saldo USDT dulu, atau lanjut manual.`);
+        return;
+      }
+      if(costUsd > 0){
+        usdtHolding.amount = usdtBalance - costUsd;
+      }
+    }
+  }
+
+  const existing = editingHoldIdx!==null ? state.holdings[editingHoldIdx] : null;
+  const obj = {
+    coinId: posSelectedCoin.id, symbol: posSelectedCoin.symbol, name: posSelectedCoin.name, image: posSelectedCoin.image,
+    amount, avgBuy, mode, manualPrice,
+    dateAdded: existing && existing.dateAdded ? existing.dateAdded : Date.now()
+  };
+  if(editingHoldIdx!==null) state.holdings[editingHoldIdx] = obj;
+  else state.holdings.push(obj);
+  saveData();
+  $('posOverlay').classList.remove('show');
+  showToast(editingHoldIdx!==null ? "Position updated" : "Position added");
+  fetchPrices();
+});
+$('posDelete').addEventListener('click', ()=>{
+  if(editingHoldIdx!==null){
+    const h = state.holdings[editingHoldIdx];
+    const sellPrice = currentPrice(h);
+    const amount = parseFloat(h.amount)||0;
+    const costBasis = (parseFloat(h.avgBuy)||0) * amount;
+    const proceeds = sellPrice * amount;
+    const pnlAbs = proceeds - costBasis;
+    const pnlPct = costBasis > 0 ? (pnlAbs/costBasis*100) : 0;
+    state.realized.push({
+      symbol: h.symbol, name: h.name, image: h.image, amount,
+      avgBuy: h.avgBuy, sellPrice, pnlAbs, pnlPct,
+      dateOpened: h.dateAdded || null, dateClosed: Date.now()
+    });
+    if(state.realized.length > 200) state.realized.shift();
+    state.holdings.splice(editingHoldIdx,1);
+    saveData(); renderAll();
+    showToast("Position ditutup — realized PnL dicatat");
+  }
+  $('posOverlay').classList.remove('show');
+});
+
+/* ---------------- Watchlist modal ---------------- */
+wireCoinSearch($('watchCoinSearch'), $('watchCoinResults'), $('watchCoinSelected'), (coin)=>{
+  watchSelectedCoin = coin;
+  showSelectedCoin($('watchCoinSelected'), coin);
+  $('watchSave').disabled = false;
+});
+$('watchCoinSelected').addEventListener('click', (e)=>{
+  if(e.target.id==='clearCoinBtn'){ watchSelectedCoin=null; showSelectedCoin($('watchCoinSelected'), null); $('watchSave').disabled=true; }
+});
+$('watchClose').addEventListener('click', ()=> $('watchOverlay').classList.remove('show'));
+$('watchSave').addEventListener('click', ()=>{
+  if(!watchSelectedCoin){ showToast("Search and select a coin first"); return; }
+  let targetPrice = parseFloat($('watchTarget').value) || 0;
+  if(state.currency === 'IDR') targetPrice = targetPrice / (idrRate||1);
+  const obj = {coinId:watchSelectedCoin.id, symbol:watchSelectedCoin.symbol, name:watchSelectedCoin.name, image:watchSelectedCoin.image, targetPrice};
+  if(editingWatchIdx!==null) state.watchlist[editingWatchIdx] = obj;
+  else state.watchlist.push(obj);
+  saveData();
+  $('watchOverlay').classList.remove('show');
+  showToast(editingWatchIdx!==null ? "Watchlist diupdate" : "Added to watchlist");
+  fetchPrices();
+});
+$('watchDelete').addEventListener('click', ()=>{
+  if(editingWatchIdx!==null){
+    state.watchlist.splice(editingWatchIdx,1);
+    saveData(); renderAll();
+    showToast("Dihapus dari watchlist");
+  }
+  $('watchOverlay').classList.remove('show');
+});
+
+/* ---------------- Capital / Cash edit ---------------- */
+document.querySelectorAll('[data-edit]').forEach(el=>{
+  el.addEventListener('click', ()=>{
+    editTarget = el.dataset.edit;
+    const isIdr = state.currency === 'IDR';
+    const baseUsd = editTarget==='capital' ? state.capital : state.cash;
+    const displayVal = isIdr ? Math.round(baseUsd * idrRate) : baseUsd;
+    $('editTitle').textContent = editTarget==='capital' ? 'Edit Total Capital' : 'Edit Available Cash';
+    $('editLabel').textContent = (editTarget==='capital' ? 'Total Capital' : 'Available Cash') + (isIdr ? ' (Rp)' : ' ($)');
+    $('editInput').value = displayVal;
+    $('editOverlay').classList.add('show');
+  });
+});
+$('editClose').addEventListener('click', ()=> $('editOverlay').classList.remove('show'));
+$('editSave').addEventListener('click', ()=>{
+  const raw = parseFloat($('editInput').value)||0;
+  const val = state.currency === 'IDR' ? (raw / (idrRate||1)) : raw; // stored internally in USD
+  if(editTarget==='capital') state.capital = val;
+  else if(editTarget==='cash') state.cash = val;
+  saveData(); renderSummary();
+  $('editOverlay').classList.remove('show');
+});
+
+/* ---------------- Misc ---------------- */
+document.querySelectorAll('.overlay').forEach(ov=>{
+  ov.addEventListener('click', (e)=>{ if(e.target===ov) ov.classList.remove('show'); });
+});
+$('holdSearch').addEventListener('input', renderHoldings);
+$('holdSort').addEventListener('change', renderHoldings);
+document.querySelectorAll('.range-tab').forEach(tab=>{
+  tab.addEventListener('click', ()=>{
+    document.querySelectorAll('.range-tab').forEach(t=>t.classList.remove('active'));
+    tab.classList.add('active');
+    selectedRange = tab.dataset.range;
+    drawGrowthChart();
+  });
+});
+$('refreshBtn').addEventListener('click', fetchPrices);
+
+/* ---------------- Backup & Restore ---------------- */
+$('menuBtn').addEventListener('click', ()=> $('menuOverlay').classList.add('show'));
+$('menuClose').addEventListener('click', ()=> $('menuOverlay').classList.remove('show'));
+
+$('openArchiveBtn').addEventListener('click', ()=>{
+  renderArchiveList();
+  $('archiveOverlay').classList.add('show');
+});
+$('archiveClose').addEventListener('click', ()=> $('archiveOverlay').classList.remove('show'));
+
+$('exportBtn').addEventListener('click', ()=>{
+  try{
+    const json = JSON.stringify(state, null, 2);
+    const blob = new Blob([json], {type:'application/json'});
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    const dateStr = new Date().toISOString().slice(0,10);
+    a.href = url;
+    a.download = `aftershift-backup-${dateStr}.json`;
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    URL.revokeObjectURL(url);
+    localStorage.setItem('aftershift-last-export', Date.now().toString());
+    showToast("Backup di-download");
+  }catch(e){
+    showToast("Export gagal — coba lagi");
+  }
+});
+
+$('importBtn').addEventListener('click', ()=> $('importFile').click());
+$('importFile').addEventListener('change', (e)=>{
+  const file = e.target.files[0];
+  if(!file) return;
+  const reader = new FileReader();
+  reader.onload = (ev)=>{
+    try{
+      const parsed = JSON.parse(ev.target.result);
+      if(!parsed || !Array.isArray(parsed.holdings)){
+        showToast("File tidak valid — bukan file backup AFTERSHIFT");
+        return;
+      }
+      if(!confirm("Import akan menimpa semua data saat ini. Lanjutkan?")) return;
+      state = Object.assign({holdings:[],watchlist:[],capital:0,cash:0,currency:'USD',history:[],realized:[]}, parsed);
+      saveData();
+      updateCurToggleUI();
+      renderAll();
+      $('menuOverlay').classList.remove('show');
+      showToast("Backup berhasil di-import");
+    }catch(err){
+      showToast("File rusak atau bukan format JSON yang benar");
+    }
+    $('importFile').value = '';
+  };
+  reader.readAsText(file);
+});
+
+let toastTimer;
+function showToast(msg){
+  const t = $('toast');
+  t.textContent = msg;
+  t.classList.add('show');
+  clearTimeout(toastTimer);
+  toastTimer = setTimeout(()=> t.classList.remove('show'), 2400);
+}
+
+/* ---------------- Init ---------------- */
+loadData().then(fetchPrices);
+setTimeout(()=>{
+  try{
+    const last = localStorage.getItem('aftershift-last-export');
+    const daysSince = last ? (Date.now() - parseInt(last)) / 86400000 : Infinity;
+    if(state.holdings.length > 0 && daysSince > 7){
+      showToast("Sudah lama nggak backup — yuk Export dari menu ⋯");
+    }
+  }catch(e){}
+}, 1500);
+/* Auto-refresh interval removed by request — fetches once on open, then only via manual refresh tap. Saves API calls. */
+</script>
+</body>
+</html>
